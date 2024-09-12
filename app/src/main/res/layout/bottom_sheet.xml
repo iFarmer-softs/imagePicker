@@ -30,6 +30,7 @@
             android:background="@drawable/camera_back" />
 
         <ImageView
+            android:id="@+id/ivGallery"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/ic_ellipse_6"
@@ -41,6 +42,7 @@
             android:src="@drawable/ic_gallery2" />
 
         <ImageView
+            android:id="@+id/ivSwitchCamera"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_below="@+id/peekRecyclerView"
