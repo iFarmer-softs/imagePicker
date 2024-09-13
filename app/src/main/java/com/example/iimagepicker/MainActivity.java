@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     private ActivityMainBinding binding;
     private static final int RC_CAMERA_PERM = 123;
     private static final int RC_STORAGE_PERM = 124;
+    ArrayList<String> images = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,15 +69,23 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         });
 
         binding.bottomSheet.clickImage.setOnClickListener(view -> cameraTask());
-        binding.bottomSheet.ivGallery.setOnClickListener(view -> Log.e("TAG", "onCreate: " + getAllShownImagesPath()));
+        binding.bottomSheet.ivGallery.setOnClickListener(view -> {
+            if (hasStoragePermission()){
+                images = getAllShownImagesPath();
+
+            }
+        });
+
 
         sheetBehavior = BottomSheetBehavior.from(binding.bottomSheet.bottomSheet);
 
+
+
         binding.bottomSheet.peekRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this, RecyclerView.HORIZONTAL, false));
-        binding.bottomSheet.peekRecyclerView.setAdapter(new HomeAdapter(MainActivity.this, getAllShownImagesPath()));
+        binding.bottomSheet.peekRecyclerView.setAdapter(new HomeAdapter(MainActivity.this, images));
 
         binding.bottomSheet.mainRecyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 4));
-        binding.bottomSheet.mainRecyclerView.setAdapter(new HomeAdapter(MainActivity.this, getAllShownImagesPath()));
+        binding.bottomSheet.mainRecyclerView.setAdapter(new HomeAdapter(MainActivity.this, images));
         binding.bottomSheet.mainRecyclerView.scrollToPosition(0);
 
         binding.bottomSheet.ivSwitchCamera.setOnClickListener(view -> {
@@ -154,6 +163,50 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         //binding.mainContent.camera.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
+    private void getImagePath() {
+        // in this method we are adding all our image paths
+        // in our arraylist which we have created.
+        // on below line we are checking if the device is having an sd card or not.
+        boolean isSDPresent = android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED);
+
+        if (isSDPresent) {
+
+            // if the sd card is present we are creating a new list in
+            // which we are getting our images data with their ids.
+            final String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID};
+
+            // on below line we are creating a new
+            // string to order our images by string.
+            final String orderBy = MediaStore.Images.Media._ID;
+
+            // this method will stores all the images
+            // from the gallery in Cursor
+            Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null, null, orderBy);
+
+            // below line is to get total number of images
+            int count = cursor.getCount();
+            Log.e("TAG", "getImagePath: "+count);
+            // on below line we are running a loop to add
+            // the image file path in our array list.
+            for (int i = 0; i < count; i++) {
+
+                // on below line we are moving our cursor position
+                cursor.moveToPosition(i);
+
+                // on below line we are getting image file path
+                int dataColumnIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
+
+                // after that we are getting the image file path
+                // and adding that path in our array list.
+                //imagePaths.add(cursor.getString(dataColumnIndex));
+            }
+            //imageRVAdapter.notifyDataSetChanged();
+            // after adding the data to our
+            // array list we are closing our cursor.
+            cursor.close();
+        }
+    }
+
     private ArrayList<String> getAllShownImagesPath() {
         Uri uri;
         Cursor cursor;
@@ -161,59 +214,60 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         ArrayList<String> listOfAllImages = new ArrayList<String>();
         String[] projection = new String[]{
                 MediaStore.Images.Media._ID,
+                MediaStore.Images.Media.DATA,
                 MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
                 MediaStore.Images.Media.DATE_TAKEN
         };
 
 // content:// style URI for the "primary" external storage volume
-        Uri images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+       // Uri images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
 // Make the query.
-        Cursor cur = getContentResolver().query(images,
-                projection, // Which columns to return
-                null,       // Which rows to return (all rows)
-                null,       // Selection arguments (none)
-                null        // Ordering
-        );
+//        Cursor cur = getContentResolver().query(images,
+//                projection, // Which columns to return
+//                null,       // Which rows to return (all rows)
+//                null,       // Selection arguments (none)
+//                null        // Ordering
+//        );
 
-        Log.e("ListingImages", " query count=" + cur.getCount());
+//        Log.e("ListingImages", " query count=" + cur.getCount());
 
-        if (cur.moveToFirst()) {
-            String bucket;
-            String date;
-            int bucketColumn = cur.getColumnIndex(
-                    MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
-
-            int dateColumn = cur.getColumnIndex(
-                    MediaStore.Images.Media.DATE_TAKEN);
-
-            do {
-                // Get the field values
-                bucket = cur.getString(bucketColumn);
-                date = cur.getString(dateColumn);
-
-                // Do something with the values.
-                Log.e("ListingImages", " bucket=" + bucket
-                        + "  date_taken=" + date);
-            } while (cur.moveToNext());
-        }
-//        String absolutePathOfImage = null;
-//        uri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+//        if (cur.moveToFirst()) {
+//            String bucket;
+//            String date;
+//            int bucketColumn = cur.getColumnIndex(
+//                    MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
 //
+//            int dateColumn = cur.getColumnIndex(
+//                    MediaStore.Images.Media.DATE_TAKEN);
+//
+//            do {
+//                // Get the field values
+//                bucket = cur.getString(bucketColumn);
+//                date = cur.getString(dateColumn);
+//
+//                // Do something with the values.
+////                Log.e("ListingImages", " bucket=" + bucket
+////                        + "  date_taken=" + date);
+//            } while (cur.moveToNext());
+//        }
+        String absolutePathOfImage = null;
+        uri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+
 //        String[] projection = { MediaStore.MediaColumns.DATA,
 //                MediaStore.Images.Media.BUCKET_DISPLAY_NAME };
-//
-//        cursor = getContentResolver().query(uri, projection, null,
-//                null, null);
-//
-//        column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-//        column_index_folder_name = cursor
-//                .getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
-//        while (cursor.moveToNext()) {
-//            absolutePathOfImage = cursor.getString(column_index_data);
-//
-//            listOfAllImages.add(absolutePathOfImage);
-//        }
+
+        cursor = getContentResolver().query(uri, projection, null,
+                null, null);
+        Log.e("ListingImages", " query count=" + cursor.getCount());
+        column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+        column_index_folder_name = cursor
+                .getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
+        while (cursor.moveToNext()) {
+            absolutePathOfImage = cursor.getString(column_index_data);
+
+            listOfAllImages.add(absolutePathOfImage);
+        }
 
         return listOfAllImages;
     }

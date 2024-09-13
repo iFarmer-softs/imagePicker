@@ -31,12 +31,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        //Glide.with(context).load(images.get(position)).into(holder.binding.ivImages);
+        Glide.with(context).load(images.get(position)).into(holder.binding.ivImages);
     }
 
     @Override
     public int getItemCount() {
-        return 55;
+        return images.size();
     }
 
     public class  ViewHolder extends RecyclerView.ViewHolder{
