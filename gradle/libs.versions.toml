@@ -3,8 +3,8 @@ agp = "8.5.2"
 camerakit = "1.0.0-beta3.11"
 cameraview = "2.7.2"
 cameraviewVersion = "latest-SNAPSHOT"
-easypermissions = "3.0.0"
-easypermissionsVersion = "2.0.1"
+#easypermissions = "3.0.0"
+#easypermissionsVersion = "2.0.1"
 glide = "4.14.2"
 glidetovectoryou = "2.0.0"
 jpegkit = "0.1.0"
@@ -20,8 +20,6 @@ constraintlayout = "2.1.4"
 camerakit = { module = "com.camerakit:camerakit", version.ref = "camerakit" }
 cameraview = { module = "com.otaliastudios:cameraview", version.ref = "cameraview" }
 cameraview-vlatestsnapshot = { module = "com.otaliastudios:cameraview", version.ref = "cameraviewVersion" }
-easypermissions = { module = "pub.devrel:easypermissions", version.ref = "easypermissions" }
-easypermissions-v201 = { module = "pub.devrel:easypermissions", version.ref = "easypermissionsVersion" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 glidetovectoryou = { module = "com.github.corouteam:GlideToVectorYou", version.ref = "glidetovectoryou" }
 jpegkit = { module = "com.camerakit:jpegkit", version.ref = "jpegkit" }

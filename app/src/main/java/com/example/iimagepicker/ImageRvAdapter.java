@@ -2,7 +2,6 @@ package com.example.iimagepicker;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -14,11 +13,11 @@ import com.example.iimagepicker.databinding.UnitHomeBinding;
 
 import java.util.ArrayList;
 
-public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
+public class ImageRvAdapter extends RecyclerView.Adapter<ImageRvAdapter.ViewHolder> {
 
     private Context context;
     private ArrayList<String> images;
-    public HomeAdapter(@NonNull Context context, ArrayList<String> images) {
+    public ImageRvAdapter(@NonNull Context context, ArrayList<String> images) {
         this.context = context;
         this.images = images;
     }

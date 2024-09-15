@@ -48,9 +48,9 @@ dependencies {
     /* Glide */
     implementation libs.glide
     // For developers using AndroidX in their applications
-    implementation libs.easypermissions
+//    implementation libs.easypermissions
 
     // For developers using the Android Support Library
-    implementation libs.easypermissions.v201
+//    implementation libs.easypermissions.v201
 //    implementation libs.glidetovectoryou
 }

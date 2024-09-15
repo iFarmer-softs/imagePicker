@@ -68,7 +68,6 @@
             android:id="@+id/backButton"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_alignParentLeft="true"
             android:layout_margin="20dp"
             android:src="@drawable/ic_back" />
 
@@ -76,7 +75,6 @@
             android:id="@+id/selectButton"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_alignParentRight="true"
             android:layout_margin="20dp"/>
 
 
