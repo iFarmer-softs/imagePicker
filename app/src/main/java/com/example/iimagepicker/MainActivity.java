@@ -25,6 +25,7 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
         //binding.mainContent.camera.setLifecycleOwner(this);
 
-        binding.mainContent.camera.addCameraListener(new CameraListener() {
+        binding.camera.addCameraListener(new CameraListener() {
             @Override
             public void onPictureTaken(PictureResult result) {
 
@@ -86,61 +87,70 @@ public class MainActivity extends AppCompatActivity {
             // And much more
         });
 
-        binding.bottomSheet.ivGallery.setOnClickListener(view -> {
-            if (!binding.bottomSheet.mainRecyclerView.canScrollVertically(-1)) {
-                if (!sheetBehavior.isDraggable()) {
-                    sheetBehavior.setDraggable(true);
-                }
-            } else {
-                if (sheetBehavior.isDraggable()) {
-                    sheetBehavior.setDraggable(false);
-                }
-            }
-        });
+//        binding.bottomSheet.ivGallery.setOnClickListener(view -> {
+//            if (!binding.bottomSheet.mainRecyclerView.canScrollVertically(-1)) {
+//                if (!sheetBehavior.isDraggable()) {
+//                    sheetBehavior.setDraggable(true);
+//                }
+//            } else {
+//                if (sheetBehavior.isDraggable()) {
+//                    sheetBehavior.setDraggable(false);
+//                }
+//            }
+//        });
 
 
-        sheetBehavior = BottomSheetBehavior.from(binding.bottomSheet.bottomSheet);
+//        sheetBehavior = BottomSheetBehavior.from(binding.bottomSheet.bottomSheet);
         imageRvAdapter = new ImageRvAdapter(MainActivity.this, images);
-
-        binding.bottomSheet.peekRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this, RecyclerView.HORIZONTAL, false));
-        binding.bottomSheet.peekRecyclerView.setAdapter(imageRvAdapter);
-
-        binding.bottomSheet.mainRecyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 4));
-        binding.bottomSheet.mainRecyclerView.setAdapter(imageRvAdapter);
-        binding.bottomSheet.mainRecyclerView.scrollToPosition(0);
-
-        binding.bottomSheet.ivSwitchCamera.setOnClickListener(view -> {
-            binding.mainContent.camera.toggleFacing();
-        });
-
-        binding.bottomSheet.mainRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                if (!binding.bottomSheet.mainRecyclerView.canScrollVertically(-1)) {
-                    if (!sheetBehavior.isDraggable()) {
-                        sheetBehavior.setDraggable(true);
-                    }
-                } else {
-                    if (sheetBehavior.isDraggable()) {
-                        sheetBehavior.setDraggable(false);
-                    }
-                }
-            }
-        });
-
-        sheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View view, int newState) {
-            }
-
-            @Override
-            public void onSlide(@NonNull View view, float v) {
-                binding.bottomSheet.peekView.setAlpha(1.0f - v);
-                binding.bottomSheet.collapsedView.setAlpha(v);
-            }
-        });
+//
+        binding.rvImageHorizontal.setLayoutManager(new LinearLayoutManager(MainActivity.this, RecyclerView.HORIZONTAL, false));
+        binding.rvImageHorizontal.setAdapter(imageRvAdapter);
+//
+//        binding.bottomSheet.mainRecyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 4));
+//        binding.bottomSheet.mainRecyclerView.setAdapter(imageRvAdapter);
+//        binding.bottomSheet.mainRecyclerView.scrollToPosition(0);
+//
+//        binding.bottomSheet.ivSwitchCamera.setOnClickListener(view -> {
+//            binding.mainContent.camera.toggleFacing();
+//        });
+//
+//        binding.bottomSheet.mainRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+//                if (!binding.bottomSheet.mainRecyclerView.canScrollVertically(-1)) {
+//                    if (!sheetBehavior.isDraggable()) {
+//                        sheetBehavior.setDraggable(true);
+//                    }
+//                } else {
+//                    if (sheetBehavior.isDraggable()) {
+//                        sheetBehavior.setDraggable(false);
+//                    }
+//                }
+//            }
+//        });
+//
+//        sheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+//            @Override
+//            public void onStateChanged(@NonNull View view, int newState) {
+//            }
+//
+//            @Override
+//            public void onSlide(@NonNull View view, float v) {
+//                binding.bottomSheet.peekView.setAlpha(1.0f - v);
+//                binding.bottomSheet.collapsedView.setAlpha(v);
+//            }
+//        });
 
         //binding.mainContent.camera.setRequestPermissions(true);
+
+        checkPermission();
+        
+        binding.clickImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "asdjhfgjhadsgf", Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
@@ -155,14 +165,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         //binding.mainContent.camera.onResume();
-        binding.mainContent.camera.open();
+        binding.camera.open();
     }
 
     @Override
     protected void onPause() {
         //binding.mainContent.camera.onPause();
         super.onPause();
-        binding.mainContent.camera.close();
+        binding.camera.close();
     }
 
     @Override
@@ -174,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        binding.mainContent.camera.destroy();
+        binding.camera.destroy();
     }
 
     @Override

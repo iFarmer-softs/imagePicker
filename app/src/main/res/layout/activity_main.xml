@@ -5,15 +5,77 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff"
     tools:context=".MainActivity">
-    <include android:id="@+id/mainContent" layout="@layout/content_main" />
 
-    <include android:id="@+id/bottomSheet" layout="@layout/bottom_sheet" />
+    <com.otaliastudios.cameraview.CameraView
+        android:id="@+id/camera"
+        android:keepScreenOn="true"
+        app:cameraGesturePinch="zoom"
+        app:cameraExperimental="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:src="@drawable/ic_close_small"
+            app:tint="@color/white"
+            android:background="@drawable/ic_ellipse_6"
+            android:layout_margin="20dp"
+            android:padding="4dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"/>
+        <ImageView
+            android:src="@drawable/ic_flash_active"
+            android:background="@drawable/ic_ellipse_6"
+            android:padding="8dp"
+            android:layout_gravity="end"
+            android:layout_margin="20dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"/>
+    </com.otaliastudios.cameraview.CameraView>
 
-<!--    <com.otaliastudios.cameraview.CameraView-->
-<!--        android:id="@+id/camera"-->
-<!--        android:keepScreenOn="true"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="match_parent" />-->
+    <LinearLayout
+        android:gravity="center"
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+        <ImageView
+            android:id="@+id/ivGallery"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:tint="@color/white"
+            android:src="@drawable/ic_gallery2" />
+        <ImageView
+            android:id="@+id/clickImage"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_below="@+id/peekRecyclerView"
+            android:background="@drawable/camera_back" />
+
+        <ImageView
+            android:id="@+id/ivSwitchCamera"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_below="@+id/peekRecyclerView"
+            app:tint="@color/white"
+            android:src="@drawable/baseline_cameraswitch_24" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:background="@android:color/transparent"
+        app:behavior_peekHeight="196dp"
+        app:behavior_hideable="false"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvImageHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:textColor="@color/white"
+            android:text="asdfsadfasdf"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
