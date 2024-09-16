@@ -33,6 +33,7 @@
     </com.otaliastudios.cameraview.CameraView>
 
     <LinearLayout
+        android:id="@+id/llCameraControll"
         android:gravity="center"
         android:layout_gravity="bottom"
         android:layout_width="match_parent"
@@ -60,6 +61,7 @@
     </LinearLayout>
 
     <FrameLayout
+        android:id="@+id/flDrag"
         android:background="@android:color/transparent"
         app:behavior_peekHeight="196dp"
         app:behavior_hideable="false"
@@ -68,14 +70,18 @@
         android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
+            android:background="@color/white"
+            android:alpha="0"
+            android:id="@+id/rvImageGrid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvImageHorizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-        <TextView
-            android:textColor="@color/white"
-            android:text="asdfsadfasdf"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+
+
 
     </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

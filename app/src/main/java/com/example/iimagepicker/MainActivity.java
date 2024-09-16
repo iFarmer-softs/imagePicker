@@ -6,23 +6,16 @@ import static android.Manifest.permission.READ_MEDIA_IMAGES;
 import static android.Manifest.permission.READ_MEDIA_VIDEO;
 import static android.Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED;
 import static android.Manifest.permission.RECORD_AUDIO;
-import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 
 import static androidx.core.content.PermissionChecker.PERMISSION_GRANTED;
 
-import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -30,37 +23,40 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.iimagepicker.adapters.ImageRvGridAdapter;
+import com.example.iimagepicker.adapters.ImageRvHorizontalAdapter;
 import com.example.iimagepicker.databinding.ActivityMainBinding;
+import com.example.iimagepicker.models.Image;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.PictureResult;
 import com.otaliastudios.cameraview.VideoResult;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
 
     private BottomSheetBehavior sheetBehavior;
     private ActivityMainBinding binding;
-    private ArrayList<String> images = new ArrayList<>();
+    private ArrayList<Image> images = new ArrayList<>();
     //    private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
 //    //private ActivityResultLauncher<String[]> permissionLauncher;
 //    private ActivityResultLauncher<Intent> startActivityForResult;
-    private ImageRvAdapter imageRvAdapter;
+    private ImageRvHorizontalAdapter imageRvHorizontalAdapter;
+    private ImageRvGridAdapter imageRvGridAdapter;
     private int count = 0;
+
+    public static HashMap<String, String> selectedImages = new HashMap<>();
 
 
     @Override
@@ -100,11 +96,15 @@ public class MainActivity extends AppCompatActivity {
 //        });
 
 
-//        sheetBehavior = BottomSheetBehavior.from(binding.bottomSheet.bottomSheet);
-        imageRvAdapter = new ImageRvAdapter(MainActivity.this, images);
+        sheetBehavior = BottomSheetBehavior.from(binding.flDrag);
+        imageRvHorizontalAdapter = new ImageRvHorizontalAdapter(this, images);
+        imageRvGridAdapter = new ImageRvGridAdapter(this, images);
 //
-        binding.rvImageHorizontal.setLayoutManager(new LinearLayoutManager(MainActivity.this, RecyclerView.HORIZONTAL, false));
-        binding.rvImageHorizontal.setAdapter(imageRvAdapter);
+        binding.rvImageHorizontal.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+        binding.rvImageHorizontal.setAdapter(imageRvHorizontalAdapter);
+
+        binding.rvImageGrid.setLayoutManager(new GridLayoutManager(this, 3));
+        binding.rvImageGrid.setAdapter(imageRvGridAdapter);
 //
 //        binding.bottomSheet.mainRecyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 4));
 //        binding.bottomSheet.mainRecyclerView.setAdapter(imageRvAdapter);
@@ -129,17 +129,19 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 //
-//        sheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-//            @Override
-//            public void onStateChanged(@NonNull View view, int newState) {
-//            }
-//
-//            @Override
-//            public void onSlide(@NonNull View view, float v) {
-//                binding.bottomSheet.peekView.setAlpha(1.0f - v);
-//                binding.bottomSheet.collapsedView.setAlpha(v);
-//            }
-//        });
+        sheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View view, int newState) {
+            }
+
+            @Override
+            public void onSlide(@NonNull View view, float v) {
+                Log.e("float", v + "");
+                binding.rvImageHorizontal.setAlpha(1.0f - v);
+                binding.llCameraControll.setAlpha(1.0f - v);
+                binding.rvImageGrid.setAlpha(v);
+            }
+        });
 
         //binding.mainContent.camera.setRequestPermissions(true);
 
@@ -223,14 +225,14 @@ public class MainActivity extends AppCompatActivity {
 
             // this method will stores all the images
             // from the gallery in Cursor
-            Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null, null, orderBy);
+            Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null, null, orderBy + " desc");
 
             // below line is to get total number of images
             int count = cursor.getCount();
             Log.e("TAG", "getImagePath: " + count);
             // on below line we are running a loop to add
             // the image file path in our array list.
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < count; i++) {
 
                 // on below line we are moving our cursor position
                 cursor.moveToPosition(i);
@@ -240,9 +242,10 @@ public class MainActivity extends AppCompatActivity {
 
                 // after that we are getting the image file path
                 // and adding that path in our array list.
-                images.add(cursor.getString(dataColumnIndex));
+                images.add(new Image(cursor.getString(dataColumnIndex)));
             }
-            imageRvAdapter.notifyDataSetChanged();
+            imageRvHorizontalAdapter.notifyDataSetChanged();
+            imageRvGridAdapter.notifyDataSetChanged();
             // after adding the data to our
             // array list we are closing our cursor.
             cursor.close();

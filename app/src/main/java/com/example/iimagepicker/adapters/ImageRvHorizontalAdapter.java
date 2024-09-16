@@ -1,4 +1,4 @@
-package com.example.iimagepicker;
+package com.example.iimagepicker.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,14 +10,15 @@ import androidx.recyclerview.widget.RecyclerView;
 //import com.bumptech.glide.Glide;Glide
 import com.bumptech.glide.Glide;
 import com.example.iimagepicker.databinding.UnitHomeBinding;
+import com.example.iimagepicker.models.Image;
 
 import java.util.ArrayList;
 
-public class ImageRvAdapter extends RecyclerView.Adapter<ImageRvAdapter.ViewHolder> {
+public class ImageRvHorizontalAdapter extends RecyclerView.Adapter<ImageRvHorizontalAdapter.ViewHolder> {
 
     private Context context;
-    private ArrayList<String> images;
-    public ImageRvAdapter(@NonNull Context context, ArrayList<String> images) {
+    private ArrayList<Image> images;
+    public ImageRvHorizontalAdapter(@NonNull Context context, ArrayList<Image> images) {
         this.context = context;
         this.images = images;
     }
@@ -25,12 +26,12 @@ public class ImageRvAdapter extends RecyclerView.Adapter<ImageRvAdapter.ViewHold
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(UnitHomeBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        return new ViewHolder(UnitHomeBinding.inflate(LayoutInflater.from(context), parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Glide.with(context).load(images.get(position)).into(holder.binding.ivImages);
+        Glide.with(context).load(images.get(position).getImagePath()).into(holder.binding.ivImages);
     }
 
     @Override
