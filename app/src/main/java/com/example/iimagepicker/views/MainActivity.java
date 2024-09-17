@@ -1,4 +1,4 @@
-package com.example.iimagepicker;
+package com.example.iimagepicker.views;
 
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
@@ -9,16 +9,21 @@ import static android.Manifest.permission.RECORD_AUDIO;
 
 import static androidx.core.content.PermissionChecker.PERMISSION_GRANTED;
 
+import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -31,6 +36,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.iimagepicker.adapters.ImageRvGridAdapter;
 import com.example.iimagepicker.adapters.ImageRvHorizontalAdapter;
 import com.example.iimagepicker.databinding.ActivityMainBinding;
@@ -39,9 +45,22 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.PictureResult;
 import com.otaliastudios.cameraview.VideoResult;
+import com.otaliastudios.cameraview.controls.Preview;
+import com.otaliastudios.cameraview.frame.Frame;
+import com.otaliastudios.cameraview.frame.FrameProcessor;
+import com.otaliastudios.cameraview.size.AspectRatio;
+import com.otaliastudios.cameraview.size.Size;
+import com.otaliastudios.cameraview.size.SizeSelector;
+import com.otaliastudios.cameraview.size.SizeSelectors;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
     private int count = 0;
 
     public static HashMap<String, String> selectedImages = new HashMap<>();
+    public static Bitmap bitmap;
 
 
     @Override
@@ -65,35 +85,9 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        //requestPermissions();
+        requestPermissions();
 
-        //binding.mainContent.camera.setLifecycleOwner(this);
-
-        binding.camera.addCameraListener(new CameraListener() {
-            @Override
-            public void onPictureTaken(PictureResult result) {
-
-            }
-
-            @Override
-            public void onVideoTaken(VideoResult result) {
-                // A Video was taken!
-            }
-
-            // And much more
-        });
-
-//        binding.bottomSheet.ivGallery.setOnClickListener(view -> {
-//            if (!binding.bottomSheet.mainRecyclerView.canScrollVertically(-1)) {
-//                if (!sheetBehavior.isDraggable()) {
-//                    sheetBehavior.setDraggable(true);
-//                }
-//            } else {
-//                if (sheetBehavior.isDraggable()) {
-//                    sheetBehavior.setDraggable(false);
-//                }
-//            }
-//        });
+        binding.camera.setLifecycleOwner(this);
 
 
         sheetBehavior = BottomSheetBehavior.from(binding.flDrag);
@@ -105,30 +99,43 @@ public class MainActivity extends AppCompatActivity {
 
         binding.rvImageGrid.setLayoutManager(new GridLayoutManager(this, 3));
         binding.rvImageGrid.setAdapter(imageRvGridAdapter);
-//
-//        binding.bottomSheet.mainRecyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 4));
-//        binding.bottomSheet.mainRecyclerView.setAdapter(imageRvAdapter);
-//        binding.bottomSheet.mainRecyclerView.scrollToPosition(0);
-//
-//        binding.bottomSheet.ivSwitchCamera.setOnClickListener(view -> {
-//            binding.mainContent.camera.toggleFacing();
-//        });
-//
-//        binding.bottomSheet.mainRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-//                if (!binding.bottomSheet.mainRecyclerView.canScrollVertically(-1)) {
-//                    if (!sheetBehavior.isDraggable()) {
-//                        sheetBehavior.setDraggable(true);
-//                    }
-//                } else {
-//                    if (sheetBehavior.isDraggable()) {
-//                        sheetBehavior.setDraggable(false);
-//                    }
-//                }
-//            }
-//        });
-//
+
+        //binding.camera.setPreview(Preview.GL_SURFACE);
+        binding.camera.post(new Runnable() {
+            @Override
+            public void run() {
+                binding.camera.setPictureSize(SizeSelectors.maxHeight(binding.camera.getHeight()));
+                binding.camera.setPictureSize(SizeSelectors.minHeight(binding.camera.getHeight()));
+                binding.camera.setPictureSize(SizeSelectors.minWidth(binding.camera.getWidth()));
+                binding.camera.setPictureSize(SizeSelectors.maxWidth(binding.camera.getWidth()));
+            }
+        });
+
+
+
+        binding.ivSwitchCamera.setOnClickListener(view -> {
+            binding.camera.toggleFacing();
+        });
+
+        binding.camera.addCameraListener(new CameraListener() {
+            @Override
+            public void onPictureTaken(PictureResult result) {
+//                AspectRatio.of(result.getSize());
+                bitmap = BitmapFactory.decodeByteArray(result.getData(), 0, result.getData().length);
+//                bitmap = Bitmap.createScaledBitmap(
+//                        bitmap, binding.camera.getPictureSize().getWidth(), binding.camera.getPictureSize().getWidth(), false);
+
+                startActivity(new Intent(MainActivity.this, ImagePreviewActivity.class));
+            }
+
+            @Override
+            public void onVideoTaken(VideoResult result) {
+                // A Video was taken!
+            }
+
+            // And much more
+        });
+
         sheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View view, int newState) {
@@ -143,17 +150,45 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //binding.mainContent.camera.setRequestPermissions(true);
 
-        checkPermission();
-        
         binding.clickImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "asdjhfgjhadsgf", Toast.LENGTH_SHORT).show();
+                //Preview p = binding.camera.getPreview();
+//                bitmap = loadBitmapFromView(binding.camera);
+//                Log.e("TAG", "onClick: "+bitmap.getByteCount());
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        startActivity(new Intent(MainActivity.this, ImagePreviewActivity.class));
+//                    }
+//                },500);
+                binding.camera.takePicture();
+                //Toast.makeText(MainActivity.this, "asdjhfgjhadsgf", Toast.LENGTH_SHORT).show();
             }
         });
 
+        binding.ivGallery.setOnClickListener(view -> {
+            sheetBehavior.setState(STATE_EXPANDED);
+        });
+
+        checkPermission();
+    }
+
+    private String getFileFromBitMap(Bitmap bitmap) {
+        File filesDir = getCacheDir();
+        File imageFile = new File(filesDir, System.currentTimeMillis() + ".jpg");
+
+        OutputStream os;
+        try {
+            os = new FileOutputStream(imageFile);
+            //bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            Log.e(getClass().getSimpleName(), "Error writing bitmap", e);
+        }
+        return imageFile.getPath();
     }
 
 
@@ -206,6 +241,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
     private void getImagePath() {
         // in this method we are adding all our image paths
         // in our arraylist which we have created.
@@ -327,6 +363,15 @@ public class MainActivity extends AppCompatActivity {
         } else {
             permissionLauncher.launch(new String[]{CAMERA, RECORD_AUDIO, READ_EXTERNAL_STORAGE});
         }
+    }
+
+    public static Bitmap loadBitmapFromView(View v) {
+        Log.e("TAG", "loadBitmapFromView: "+v.getHeight());
+        Log.e("TAG", "loadBitmapFromView: "+v.getWidth());
+        Bitmap b = Bitmap.createBitmap(v.getWidth() , v.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+        v.draw(c);
+        return b;
     }
 
 }

@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".views.MainActivity">
 
     <com.otaliastudios.cameraview.CameraView
         android:id="@+id/camera"
@@ -32,33 +32,7 @@
             android:layout_height="36dp"/>
     </com.otaliastudios.cameraview.CameraView>
 
-    <LinearLayout
-        android:id="@+id/llCameraControll"
-        android:gravity="center"
-        android:layout_gravity="bottom"
-        android:layout_width="match_parent"
-        android:layout_height="100dp">
-        <ImageView
-            android:id="@+id/ivGallery"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            app:tint="@color/white"
-            android:src="@drawable/ic_gallery2" />
-        <ImageView
-            android:id="@+id/clickImage"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_below="@+id/peekRecyclerView"
-            android:background="@drawable/camera_back" />
 
-        <ImageView
-            android:id="@+id/ivSwitchCamera"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_below="@+id/peekRecyclerView"
-            app:tint="@color/white"
-            android:src="@drawable/baseline_cameraswitch_24" />
-    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/flDrag"
@@ -82,6 +56,36 @@
             android:layout_height="wrap_content"/>
 
 
-
     </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/llCameraControll"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+        <ImageView
+            android:layout_weight="1"
+            android:id="@+id/ivGallery"
+            android:layout_gravity="start|center"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:tint="@color/white"
+            android:src="@drawable/ic_gallery2" />
+        <ImageView
+            android:id="@+id/clickImage"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/camera_back" />
+
+        <ImageView
+            android:layout_weight="1"
+            android:id="@+id/ivSwitchCamera"
+            android:layout_gravity="end|center"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:tint="@color/white"
+            android:src="@drawable/baseline_cameraswitch_24" />
+    </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

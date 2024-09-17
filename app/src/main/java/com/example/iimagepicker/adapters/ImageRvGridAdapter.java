@@ -10,12 +10,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.iimagepicker.MainActivity;
+import com.example.iimagepicker.views.MainActivity;
 import com.example.iimagepicker.databinding.RowGridImageBinding;
 import com.example.iimagepicker.models.Image;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ImageRvGridAdapter extends RecyclerView.Adapter<ImageRvGridAdapter.ViewHolder> {
 
