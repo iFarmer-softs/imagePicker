@@ -24,6 +24,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -88,7 +89,8 @@ public class MainActivity extends AppCompatActivity {
         requestPermissions();
 
         binding.camera.setLifecycleOwner(this);
-
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+//                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         sheetBehavior = BottomSheetBehavior.from(binding.flDrag);
         imageRvHorizontalAdapter = new ImageRvHorizontalAdapter(this, images);
@@ -104,6 +106,8 @@ public class MainActivity extends AppCompatActivity {
         binding.camera.post(new Runnable() {
             @Override
             public void run() {
+                Log.e("TAG", "runroot: "+binding.getRoot().getHeight());
+                Log.e("TAG", "runchild: "+binding.camera.getHeight());
                 binding.camera.setPictureSize(SizeSelectors.maxHeight(binding.camera.getHeight()));
                 binding.camera.setPictureSize(SizeSelectors.minHeight(binding.camera.getHeight()));
                 binding.camera.setPictureSize(SizeSelectors.minWidth(binding.camera.getWidth()));
@@ -143,10 +147,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSlide(@NonNull View view, float v) {
-                Log.e("float", v + "");
                 binding.rvImageHorizontal.setAlpha(1.0f - v);
                 binding.llCameraControll.setAlpha(1.0f - v);
-                binding.rvImageGrid.setAlpha(v);
+                binding.llGrid.setAlpha(v);
+                //binding.rvImageGrid.setAlpha(v);
             }
         });
 

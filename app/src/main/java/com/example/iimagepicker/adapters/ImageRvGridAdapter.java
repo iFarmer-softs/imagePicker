@@ -50,7 +50,7 @@ public class ImageRvGridAdapter extends RecyclerView.Adapter<ImageRvGridAdapter.
             @Override
             public void onClick(View v) {
                 images.get(position).setSelected(!images.get(position).isSelected());
-                if(images.get(position).isSelected() == false){
+                if(!images.get(position).isSelected()){
                     MainActivity.selectedImages.remove(images.get(position).getImagePath());
                 }else {
                     MainActivity.selectedImages.put(images.get(position).getImagePath(), "");

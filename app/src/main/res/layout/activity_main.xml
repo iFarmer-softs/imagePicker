@@ -14,22 +14,32 @@
         app:cameraExperimental="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <ImageView
-            android:src="@drawable/ic_close_small"
-            app:tint="@color/white"
-            android:background="@drawable/ic_ellipse_6"
-            android:layout_margin="20dp"
-            android:padding="4dp"
-            android:layout_width="36dp"
-            android:layout_height="36dp"/>
-        <ImageView
-            android:src="@drawable/ic_flash_active"
-            android:background="@drawable/ic_ellipse_6"
-            android:padding="8dp"
-            android:layout_gravity="end"
-            android:layout_margin="20dp"
-            android:layout_width="36dp"
-            android:layout_height="36dp"/>
+        <LinearLayout
+            android:layout_marginTop="36dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:src="@drawable/ic_close_small"
+                app:tint="@color/white"
+                android:background="@drawable/ic_ellipse_6"
+                android:layout_margin="20dp"
+                android:padding="4dp"
+                android:layout_width="36dp"
+                android:layout_height="36dp"/>
+            <View
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
+            <ImageView
+                android:src="@drawable/ic_flash_active"
+                android:background="@drawable/ic_ellipse_6"
+                android:padding="8dp"
+                android:layout_margin="20dp"
+                android:layout_width="36dp"
+                android:layout_height="36dp"/>
+        </LinearLayout>
+
     </com.otaliastudios.cameraview.CameraView>
 
 
@@ -42,13 +52,44 @@
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:background="@color/white"
+        <LinearLayout
+            android:id="@+id/llGrid"
             android:alpha="0"
-            android:id="@+id/rvImageGrid"
+            android:layout_marginTop="40dp"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize">
+                <ImageView
+                    android:layout_gravity="center|start"
+                    android:src="@drawable/ic_back"
+                    android:padding="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent" />
+                <ImageView
+                    android:padding="16dp"
+                    app:tint="#00574B"
+                    android:layout_gravity="end|center"
+                    android:src="@drawable/select_check_box_24dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:background="@color/white"
+                android:id="@+id/rvImageGrid"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvImageHorizontal"
