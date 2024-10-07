@@ -61,6 +61,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageRvGridAdapter imageRvGridAdapter;
     private int count = 0;
 
-    public static HashMap<String, String> selectedImages = new HashMap<>();
+    public static LinkedHashMap<String, String> selectedImages = new LinkedHashMap<>();
     public static Bitmap bitmap;
 
 
@@ -103,17 +104,15 @@ public class MainActivity extends AppCompatActivity {
         binding.rvImageGrid.setAdapter(imageRvGridAdapter);
 
         //binding.camera.setPreview(Preview.GL_SURFACE);
-        binding.camera.post(new Runnable() {
-            @Override
-            public void run() {
-                Log.e("TAG", "runroot: "+binding.getRoot().getHeight());
-                Log.e("TAG", "runchild: "+binding.camera.getHeight());
-                binding.camera.setPictureSize(SizeSelectors.maxHeight(binding.camera.getHeight()));
-                binding.camera.setPictureSize(SizeSelectors.minHeight(binding.camera.getHeight()));
-                binding.camera.setPictureSize(SizeSelectors.minWidth(binding.camera.getWidth()));
-                binding.camera.setPictureSize(SizeSelectors.maxWidth(binding.camera.getWidth()));
-            }
-        });
+//        binding.camera.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                binding.camera.setPictureSize(SizeSelectors.maxHeight(binding.camera.getHeight()));
+//                binding.camera.setPictureSize(SizeSelectors.minHeight(binding.camera.getHeight()));
+//                binding.camera.setPictureSize(SizeSelectors.minWidth(binding.camera.getWidth()));
+//                binding.camera.setPictureSize(SizeSelectors.maxWidth(binding.camera.getWidth()));
+//            }
+//        });
 
 
 
@@ -125,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPictureTaken(PictureResult result) {
 //                AspectRatio.of(result.getSize());
+                result.getSize().flip();
                 bitmap = BitmapFactory.decodeByteArray(result.getData(), 0, result.getData().length);
 //                bitmap = Bitmap.createScaledBitmap(
 //                        bitmap, binding.camera.getPictureSize().getWidth(), binding.camera.getPictureSize().getWidth(), false);
@@ -147,6 +147,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSlide(@NonNull View view, float v) {
+                for (int i = 0; i < selectedImages.size(); i++) {
+                    imageRvGridAdapter.notifyItemChanged(i);
+                }
+
                 binding.rvImageHorizontal.setAlpha(1.0f - v);
                 binding.llCameraControll.setAlpha(1.0f - v);
                 binding.llGrid.setAlpha(v);
@@ -167,13 +171,15 @@ public class MainActivity extends AppCompatActivity {
 //                        startActivity(new Intent(MainActivity.this, ImagePreviewActivity.class));
 //                    }
 //                },500);
-                binding.camera.takePicture();
+                //binding.camera.takePicture();
+                binding.camera.takePictureSnapshot();
                 //Toast.makeText(MainActivity.this, "asdjhfgjhadsgf", Toast.LENGTH_SHORT).show();
             }
         });
 
         binding.ivGallery.setOnClickListener(view -> {
             sheetBehavior.setState(STATE_EXPANDED);
+            //imageRvGridAdapter.notifyDataSetChanged();
         });
 
         checkPermission();

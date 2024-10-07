@@ -36,7 +36,7 @@
             android:name=".views.ImagePreviewActivity"
             android:exported="false" />
         <activity
-            android:theme="@style/Theme.IImagePicker.NoActionBar"
+
             android:name=".views.MainActivity"
             android:exported="true" >
             <intent-filter>
