@@ -108,21 +108,31 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:minWidth="80dp"
-            android:minHeight="80dp"
+            android:minWidth="64dp"
+            android:minHeight="64dp"
+            android:layout_marginTop="18dp"
             android:visibility="gone"
             app:cardBackgroundColor="@android:color/holo_green_light"
             app:cardCornerRadius="50dp"
             app:strokeColor="@color/white"
             app:strokeWidth="1dp">
 
+            <ImageView
+                android:layout_gravity="center"
+                android:src="@drawable/check_big_svgrepo_com"
+                app:tint="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
             <TextView
                 android:id="@+id/tvCount"
                 style="@style/ShapeAppearance.Material3.Corner.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="5"
+                android:layout_gravity="center|end"
+                android:layout_marginTop="8dp"
+                android:text="1"
+                android:layout_marginRight="12dp"
                 android:textColor="@color/white"
                 android:textStyle="bold" />
 

@@ -110,6 +110,8 @@ public class MainActivity extends AppCompatActivity{
                     image.setSelected(true);
                     images.add(0,image);
                     selectedImages.put(image.getImagePath(),selectedImages.size()+1+"");
+                    binding.cvCount.setVisibility(View.VISIBLE);
+                    binding.tvCount.setText(selectedImages.size()+"");
                     imageRvHorizontalAdapter.notifyDataSetChanged();
                     imageRvGridAdapter.notifyDataSetChanged();
                     //startActivity(new Intent(MainActivity.this, ImagePreviewActivity.class));
