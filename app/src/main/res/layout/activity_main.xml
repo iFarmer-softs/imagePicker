@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,111 +8,145 @@
 
     <com.otaliastudios.cameraview.CameraView
         android:id="@+id/camera"
-        android:keepScreenOn="true"
-        app:cameraGesturePinch="zoom"
-        app:cameraExperimental="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:keepScreenOn="true"
+        app:cameraExperimental="true"
+        app:cameraGesturePinch="zoom">
+
         <LinearLayout
 
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
             <ImageView
-                android:src="@drawable/ic_close_small"
-                app:tint="@color/white"
-                android:background="@drawable/ic_ellipse_6"
-                android:layout_margin="20dp"
-                android:padding="4dp"
                 android:layout_width="36dp"
-                android:layout_height="36dp"/>
+                android:layout_height="36dp"
+                android:layout_margin="20dp"
+                android:background="@drawable/ic_ellipse_6"
+                android:padding="4dp"
+                android:src="@drawable/ic_close_small"
+                app:tint="@color/white" />
+
             <View
-                android:layout_weight="1"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
             <ImageView
-                android:src="@drawable/ic_flash_active"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_margin="20dp"
                 android:background="@drawable/ic_ellipse_6"
                 android:padding="8dp"
-                android:layout_margin="20dp"
-                android:layout_width="36dp"
-                android:layout_height="36dp"/>
+                android:src="@drawable/ic_flash_active" />
         </LinearLayout>
 
     </com.otaliastudios.cameraview.CameraView>
 
-
-
     <FrameLayout
         android:id="@+id/flDrag"
-        android:background="@android:color/transparent"
-        app:behavior_peekHeight="196dp"
-        app:behavior_hideable="false"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        app:behavior_hideable="false"
+        app:behavior_peekHeight="270dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+
         <LinearLayout
             android:id="@+id/llGrid"
-            android:alpha="0"
-
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:alpha="0"
+            android:orientation="vertical">
+
             <LinearLayout
-                android:background="@color/white"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
                 android:layout_width="match_parent"
-                android:layout_height="?actionBarSize">
+                android:layout_height="?actionBarSize"
+                android:layout_gravity="center"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
                 <ImageView
-                    android:layout_gravity="center|start"
-                    android:src="@drawable/ic_back"
-                    android:padding="16dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|start"
+                    android:padding="16dp"
+                    android:src="@drawable/ic_back" />
+
                 <Space
                     android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
                 <ImageView
-                    android:padding="16dp"
-                    app:tint="#00574B"
-                    android:layout_gravity="end|center"
-                    android:src="@drawable/select_check_box_24dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center"
+                    android:padding="16dp"
+                    android:src="@drawable/select_check_box_24dp"
+                    app:tint="#00574B" />
             </LinearLayout>
+
             <androidx.recyclerview.widget.RecyclerView
-                android:background="@color/white"
                 android:id="@+id/rvImageGrid"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:background="@color/white" />
         </LinearLayout>
-
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvImageHorizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="70dp" />
 
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cvCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:minWidth="80dp"
+            android:minHeight="80dp"
+            android:visibility="gone"
+            app:cardBackgroundColor="@android:color/holo_green_light"
+            app:cardCornerRadius="50dp"
+            app:strokeColor="@color/white"
+            app:strokeWidth="1dp">
+
+            <TextView
+                android:id="@+id/tvCount"
+                style="@style/ShapeAppearance.Material3.Corner.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="5"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+
+        </com.google.android.material.card.MaterialCardView>
 
     </FrameLayout>
 
     <LinearLayout
         android:id="@+id/llCameraControll"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:layout_gravity="bottom"
         android:layout_width="match_parent"
-        android:layout_height="100dp">
+        android:layout_height="100dp"
+        android:layout_gravity="bottom"
+        android:gravity="center"
+        android:orientation="horizontal">
+
         <ImageView
-            android:layout_weight="1"
             android:id="@+id/ivGallery"
-            android:layout_gravity="start|center"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            app:tint="@color/white"
-            android:src="@drawable/ic_gallery2" />
+            android:layout_gravity="start|center"
+            android:layout_weight="1"
+            android:src="@drawable/ic_gallery2"
+            app:tint="@color/white" />
+
         <ImageView
             android:id="@+id/clickImage"
             android:layout_width="80dp"
@@ -121,12 +154,12 @@
             android:src="@drawable/camera_back" />
 
         <ImageView
-            android:layout_weight="1"
             android:id="@+id/ivSwitchCamera"
-            android:layout_gravity="end|center"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            app:tint="@color/white"
-            android:src="@drawable/baseline_cameraswitch_24" />
+            android:layout_gravity="end|center"
+            android:layout_weight="1"
+            android:src="@drawable/baseline_cameraswitch_24"
+            app:tint="@color/white" />
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
