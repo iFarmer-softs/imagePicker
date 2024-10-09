@@ -7,21 +7,28 @@ import static android.Manifest.permission.READ_MEDIA_VIDEO;
 import static android.Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED;
 import static android.Manifest.permission.RECORD_AUDIO;
 
+import static androidx.core.content.PermissionChecker.PERMISSION_DENIED;
+import static androidx.core.content.PermissionChecker.PERMISSION_DENIED_APP_OP;
 import static androidx.core.content.PermissionChecker.PERMISSION_GRANTED;
 
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
+import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -64,7 +71,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
 
     private BottomSheetBehavior sheetBehavior;
@@ -85,7 +92,7 @@ public class MainActivity extends AppCompatActivity{
 
         try {
             requestPermissions();
-
+            binding.camera.setRequestPermissions(false);
             binding.camera.setLifecycleOwner(this);
             sheetBehavior = BottomSheetBehavior.from(binding.flDrag);
             imageRvHorizontalAdapter = new ImageRvHorizontalAdapter(this, images);
@@ -108,10 +115,10 @@ public class MainActivity extends AppCompatActivity{
                     bitmap = BitmapFactory.decodeByteArray(result.getData(), 0, result.getData().length);
                     Image image = new Image(getFileFromBitMap(bitmap));
                     image.setSelected(true);
-                    images.add(0,image);
-                    selectedImages.put(image.getImagePath(),selectedImages.size()+1+"");
+                    images.add(0, image);
+                    selectedImages.put(image.getImagePath(), selectedImages.size() + 1 + "");
                     binding.cvCount.setVisibility(View.VISIBLE);
-                    binding.tvCount.setText(selectedImages.size()+"");
+                    binding.tvCount.setText(selectedImages.size() + "");
                     imageRvHorizontalAdapter.notifyDataSetChanged();
                     imageRvGridAdapter.notifyDataSetChanged();
                     //startActivity(new Intent(MainActivity.this, ImagePreviewActivity.class));
@@ -128,6 +135,11 @@ public class MainActivity extends AppCompatActivity{
             sheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
                 @Override
                 public void onStateChanged(@NonNull View view, int newState) {
+                    if (newState == STATE_EXPANDED) {
+
+                    } else if (newState == STATE_HIDDEN) {
+
+                    }
                 }
 
                 @Override
@@ -152,11 +164,12 @@ public class MainActivity extends AppCompatActivity{
             });
 
             binding.ivGallery.setOnClickListener(view -> {
+                checkPermission();
                 sheetBehavior.setState(STATE_EXPANDED);
             });
 
             checkPermission();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -223,43 +236,56 @@ public class MainActivity extends AppCompatActivity{
                 if (grantResult == PackageManager.PERMISSION_GRANTED) {
                     //onPPSButtonPress();
                 } else {
-                    //Log.e("TAG", "onRequestPermissionsResult: emmmm");
+                    Log.e("TAG", "onRequestPermissionsResult: emmmm");
+                    new AlertDialog.Builder(this)
+                            .setTitle("Permission")
+                            .setMessage("")
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                    someActivityResultLauncher.launch(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                            .setData(Uri.fromParts("package", getPackageName(), null)));
+                                }
+                            })
+                            .show();
                     //requestPermissions(new String[]{Manifest.permission.SEND_SMS}, PERMISSIONS_CODE);
                 }
             }
+            //if (permission.equals(CAMERA))
         }
     }
 
     private void getImagePath() {
-     try {
-         boolean isSDPresent = android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED);
+        try {
+            boolean isSDPresent = android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED);
 
-         if (isSDPresent) {
-             final String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID};
+            if (isSDPresent) {
+                final String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID};
 
-             final String orderBy = MediaStore.Images.Media._ID;
+                final String orderBy = MediaStore.Images.Media._ID;
 
-             Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null, null, orderBy + " desc");
+                Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null, null, orderBy + " desc");
 
-             int count = cursor.getCount();
-             for (int i = 0; i < count; i++) {
+                int count = cursor.getCount();
+                for (int i = 0; i < count; i++) {
 
-                 cursor.moveToPosition(i);
-                 int dataColumnIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-                 images.add(new Image(cursor.getString(dataColumnIndex)));
-             }
-             imageRvHorizontalAdapter.notifyDataSetChanged();
-             imageRvGridAdapter.notifyDataSetChanged();
-             cursor.close();
-         }
-     }catch (Exception e){
-         e.printStackTrace();
-     }
+                    cursor.moveToPosition(i);
+                    int dataColumnIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
+                    images.add(new Image(cursor.getString(dataColumnIndex)));
+                }
+                imageRvHorizontalAdapter.notifyDataSetChanged();
+                imageRvGridAdapter.notifyDataSetChanged();
+                cursor.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
     private final ActivityResultLauncher<String[]> permissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
-        checkPermission();
+        //checkPermission();
         //getImagePath();
     });
 
@@ -268,9 +294,22 @@ public class MainActivity extends AppCompatActivity{
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        //requestPermissions();
-                    }
+                    checkPermission();
+//                    if (result.getResultCode() == Activity.RESULT_OK) {
+//                        checkPermission();
+//                    } else {
+//                        new AlertDialog.Builder(MainActivity.this)
+//                                .setTitle("Permission")
+//                                .setMessage("")
+//                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialogInterface, int i) {
+//                                        dialogInterface.dismiss();
+//                                        someActivityResultLauncher.launch(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+//                                                .setData(Uri.fromParts("package", getPackageName(), null)));
+//                                    }
+//                                }).show();
+//                    }
                 }
             });
 
@@ -301,6 +340,53 @@ public class MainActivity extends AppCompatActivity{
                 getImagePath();
             } else {
 
+                if (ContextCompat.checkSelfPermission(this, CAMERA) == PERMISSION_DENIED || ContextCompat.checkSelfPermission(this, CAMERA) == PERMISSION_DENIED_APP_OP) {
+                    new AlertDialog.Builder(this)
+                            .setTitle("Permission")
+                            .setMessage("Camera")
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                    someActivityResultLauncher.launch(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                            .setData(Uri.fromParts("package", getPackageName(), null)));
+                                }
+                            }).show();
+                } else if (ContextCompat.checkSelfPermission(this, RECORD_AUDIO) == PERMISSION_DENIED || ContextCompat.checkSelfPermission(this, RECORD_AUDIO) == PERMISSION_DENIED_APP_OP) {
+                    new AlertDialog.Builder(this)
+                            .setTitle("Permission")
+                            .setMessage("Audio")
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                    someActivityResultLauncher.launch(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                            .setData(Uri.fromParts("package", getPackageName(), null)));
+                                }
+                            }).show();
+                } else if (ContextCompat.checkSelfPermission(this, READ_MEDIA_IMAGES) == PERMISSION_DENIED
+                        || ContextCompat.checkSelfPermission(this, READ_MEDIA_IMAGES) == PERMISSION_DENIED_APP_OP
+                        || ContextCompat.checkSelfPermission(this, READ_MEDIA_VIDEO) == PERMISSION_DENIED
+                        || ContextCompat.checkSelfPermission(this, READ_MEDIA_VIDEO) == PERMISSION_DENIED_APP_OP
+                        || ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) == PERMISSION_DENIED
+                        || ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) == PERMISSION_DENIED_APP_OP
+                        || ContextCompat.checkSelfPermission(this, READ_MEDIA_VISUAL_USER_SELECTED) == PERMISSION_DENIED
+                        || ContextCompat.checkSelfPermission(this, READ_MEDIA_VISUAL_USER_SELECTED) == PERMISSION_DENIED_APP_OP
+
+                ) {
+                    new AlertDialog.Builder(this)
+                            .setTitle("Permission")
+                            .setMessage("Storage")
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                    someActivityResultLauncher.launch(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                            .setData(Uri.fromParts("package", getPackageName(), null)));
+                                }
+                            }).show();
+                }
+//
 //            new AlertDialog.Builder(this)
 //                    .setTitle("Permission")
 //                    .setMessage("")
@@ -313,31 +399,49 @@ public class MainActivity extends AppCompatActivity{
 //                        }
 //                    }).show();
 
+                //checkPermission();
+
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
     private void requestPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            permissionLauncher.launch(
-                    new String[]{CAMERA, READ_MEDIA_IMAGES,
-                            RECORD_AUDIO,
-                            READ_MEDIA_VIDEO}
-            );
-        } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
-            permissionLauncher.launch(new String[]{CAMERA, RECORD_AUDIO, READ_MEDIA_IMAGES, READ_MEDIA_VIDEO});
-        } else {
-            permissionLauncher.launch(new String[]{CAMERA, RECORD_AUDIO, READ_EXTERNAL_STORAGE});
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                permissionLauncher.launch(
+                        new String[]{CAMERA, READ_MEDIA_IMAGES,
+                                RECORD_AUDIO,
+                                READ_MEDIA_VIDEO}
+                );
+            } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
+                permissionLauncher.launch(new String[]{CAMERA, RECORD_AUDIO, READ_MEDIA_IMAGES, READ_MEDIA_VIDEO});
+            } else {
+                permissionLauncher.launch(new String[]{CAMERA, RECORD_AUDIO, READ_EXTERNAL_STORAGE});
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            //checkPermission();
+//            new AlertDialog.Builder(this)
+//                    .setTitle("Permission")
+//                    .setMessage("")
+//                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int i) {
+//                            dialogInterface.dismiss();
+//                            someActivityResultLauncher.launch(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+//                                    .setData(Uri.fromParts("package", getPackageName(), null)));
+//                        }
+//                    })
+//                    .show();
         }
+
     }
 
     public static Bitmap loadBitmapFromView(View v) {
-        Log.e("TAG", "loadBitmapFromView: "+v.getHeight());
-        Log.e("TAG", "loadBitmapFromView: "+v.getWidth());
-        Bitmap b = Bitmap.createBitmap(v.getWidth() , v.getHeight(), Bitmap.Config.ARGB_8888);
+        Bitmap b = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(b);
         v.draw(c);
         return b;
