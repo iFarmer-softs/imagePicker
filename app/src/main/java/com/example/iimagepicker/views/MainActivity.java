@@ -16,6 +16,7 @@ import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -83,6 +84,10 @@ public class MainActivity extends AppCompatActivity {
     public static LinkedHashMap<String, String> selectedImages = new LinkedHashMap<>();
     public static Bitmap bitmap;
 
+    ArrayList<String> permissionsList= new ArrayList<>();
+
+    int permissionsCount = 0;
+    String[] permissionsStr = {};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         try {
+
             requestPermissions();
             binding.camera.setRequestPermissions(false);
             binding.camera.setLifecycleOwner(this);
@@ -136,9 +142,15 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onStateChanged(@NonNull View view, int newState) {
                     if (newState == STATE_EXPANDED) {
-
+                        binding.cvCount.setVisibility(View.GONE);
+                        for (int i = 0; i < selectedImages.size(); i++) {
+                            imageRvGridAdapter.notifyItemChanged(i);
+                        }
                     } else if (newState == STATE_HIDDEN) {
-
+                        for (int i = 0; i < selectedImages.size(); i++) {
+                            imageRvHorizontalAdapter.notifyItemChanged(i);
+                        }
+                        binding.cvCount.setVisibility(View.VISIBLE);
                     }
                 }
 
@@ -151,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
                     binding.rvImageHorizontal.setAlpha(1.0f - v);
                     binding.llCameraControll.setAlpha(1.0f - v);
                     binding.llGrid.setAlpha(v);
+                    binding.cvCount.setVisibility(View.GONE);
                     //binding.rvImageGrid.setAlpha(v);
                 }
             });
@@ -164,11 +177,9 @@ public class MainActivity extends AppCompatActivity {
             });
 
             binding.ivGallery.setOnClickListener(view -> {
-                checkPermission();
+                requestPermissions();
                 sheetBehavior.setState(STATE_EXPANDED);
             });
-
-            checkPermission();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -202,7 +213,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //binding.mainContent.camera.onResume();
         binding.camera.open();
     }
 
@@ -223,37 +233,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         binding.camera.destroy();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        for (int i = 0; i < permissions.length; i++) {
-            String permission = permissions[i];
-            int grantResult = grantResults[i];
-
-            if (permission.equals(CAMERA)) {
-                if (grantResult == PackageManager.PERMISSION_GRANTED) {
-                    //onPPSButtonPress();
-                } else {
-                    Log.e("TAG", "onRequestPermissionsResult: emmmm");
-                    new AlertDialog.Builder(this)
-                            .setTitle("Permission")
-                            .setMessage("")
-                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                    someActivityResultLauncher.launch(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                                            .setData(Uri.fromParts("package", getPackageName(), null)));
-                                }
-                            })
-                            .show();
-                    //requestPermissions(new String[]{Manifest.permission.SEND_SMS}, PERMISSIONS_CODE);
-                }
-            }
-            //if (permission.equals(CAMERA))
-        }
     }
 
     private void getImagePath() {
@@ -285,8 +264,49 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private final ActivityResultLauncher<String[]> permissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
-        //checkPermission();
-        //getImagePath();
+        try {
+            ArrayList<Boolean> list = new ArrayList<>(result.values());
+            permissionsList = new ArrayList<>();
+            permissionsCount = 0;
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                permissionsStr = new String[]{CAMERA,RECORD_AUDIO,READ_MEDIA_IMAGES,READ_MEDIA_VIDEO};
+            } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
+                permissionsStr = new String[]{CAMERA,RECORD_AUDIO,READ_MEDIA_IMAGES,READ_MEDIA_VIDEO};
+            } else {
+                permissionsStr = new String[]{CAMERA, RECORD_AUDIO, READ_EXTERNAL_STORAGE};
+            }
+
+            for (int i = 0; i < list.size(); i++) {
+                if (shouldShowRequestPermissionRationale(permissionsStr[i])) {
+                    permissionsList.add(permissionsStr[i]);
+                } else if (!hasPermission(permissionsStr[i])) {
+                    permissionsCount++;
+                }
+            }
+            if (!permissionsList.isEmpty()) {
+                //Some permissions are denied and can be asked again.
+                askForPermissions(permissionsList);
+            } else if (permissionsCount > 0) {
+                new AlertDialog.Builder(this)
+                        .setTitle("Permission")
+                        .setMessage("This app needs camera, gallery and audio permission")
+                        .setCancelable(false)
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                                someActivityResultLauncher.launch(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                        .setData(Uri.fromParts("package", getPackageName(), null)));
+                            }
+                        }).show();
+            } else {
+                getImagePath();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     });
 
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
@@ -294,22 +314,7 @@ public class MainActivity extends AppCompatActivity {
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
-                    checkPermission();
-//                    if (result.getResultCode() == Activity.RESULT_OK) {
-//                        checkPermission();
-//                    } else {
-//                        new AlertDialog.Builder(MainActivity.this)
-//                                .setTitle("Permission")
-//                                .setMessage("")
-//                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialogInterface, int i) {
-//                                        dialogInterface.dismiss();
-//                                        someActivityResultLauncher.launch(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-//                                                .setData(Uri.fromParts("package", getPackageName(), null)));
-//                                    }
-//                                }).show();
-//                    }
+                    requestPermissions();
                 }
             });
 
@@ -318,7 +323,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
                     && (ContextCompat.checkSelfPermission(this, READ_MEDIA_IMAGES) == PERMISSION_GRANTED
-                    || ContextCompat.checkSelfPermission(this, READ_MEDIA_VIDEO) == PERMISSION_GRANTED
+                    && ContextCompat.checkSelfPermission(this, READ_MEDIA_VIDEO) == PERMISSION_GRANTED
                     && ContextCompat.checkSelfPermission(this, CAMERA) == PERMISSION_GRANTED
                     && ContextCompat.checkSelfPermission(this, RECORD_AUDIO) == PERMISSION_GRANTED
             )
@@ -339,68 +344,7 @@ public class MainActivity extends AppCompatActivity {
             ) {
                 getImagePath();
             } else {
-
-                if (ContextCompat.checkSelfPermission(this, CAMERA) == PERMISSION_DENIED || ContextCompat.checkSelfPermission(this, CAMERA) == PERMISSION_DENIED_APP_OP) {
-                    new AlertDialog.Builder(this)
-                            .setTitle("Permission")
-                            .setMessage("Camera")
-                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                    someActivityResultLauncher.launch(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                                            .setData(Uri.fromParts("package", getPackageName(), null)));
-                                }
-                            }).show();
-                } else if (ContextCompat.checkSelfPermission(this, RECORD_AUDIO) == PERMISSION_DENIED || ContextCompat.checkSelfPermission(this, RECORD_AUDIO) == PERMISSION_DENIED_APP_OP) {
-                    new AlertDialog.Builder(this)
-                            .setTitle("Permission")
-                            .setMessage("Audio")
-                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                    someActivityResultLauncher.launch(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                                            .setData(Uri.fromParts("package", getPackageName(), null)));
-                                }
-                            }).show();
-                } else if (ContextCompat.checkSelfPermission(this, READ_MEDIA_IMAGES) == PERMISSION_DENIED
-                        || ContextCompat.checkSelfPermission(this, READ_MEDIA_IMAGES) == PERMISSION_DENIED_APP_OP
-                        || ContextCompat.checkSelfPermission(this, READ_MEDIA_VIDEO) == PERMISSION_DENIED
-                        || ContextCompat.checkSelfPermission(this, READ_MEDIA_VIDEO) == PERMISSION_DENIED_APP_OP
-                        || ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) == PERMISSION_DENIED
-                        || ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) == PERMISSION_DENIED_APP_OP
-                        || ContextCompat.checkSelfPermission(this, READ_MEDIA_VISUAL_USER_SELECTED) == PERMISSION_DENIED
-                        || ContextCompat.checkSelfPermission(this, READ_MEDIA_VISUAL_USER_SELECTED) == PERMISSION_DENIED_APP_OP
-
-                ) {
-                    new AlertDialog.Builder(this)
-                            .setTitle("Permission")
-                            .setMessage("Storage")
-                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                    someActivityResultLauncher.launch(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                                            .setData(Uri.fromParts("package", getPackageName(), null)));
-                                }
-                            }).show();
-                }
-//
-//            new AlertDialog.Builder(this)
-//                    .setTitle("Permission")
-//                    .setMessage("")
-//                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialogInterface, int i) {
-//                            dialogInterface.dismiss();
-//                            someActivityResultLauncher.launch(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-//                                    .setData(Uri.fromParts("package", getPackageName(), null)));
-//                        }
-//                    }).show();
-
-                //checkPermission();
-
+                askForPermissions(permissionsList);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -411,31 +355,53 @@ public class MainActivity extends AppCompatActivity {
     private void requestPermissions() {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                permissionLauncher.launch(
-                        new String[]{CAMERA, READ_MEDIA_IMAGES,
-                                RECORD_AUDIO,
-                                READ_MEDIA_VIDEO}
-                );
+                permissionsList.clear();
+                permissionsList.addAll(Arrays.asList(CAMERA, READ_MEDIA_IMAGES,
+                        RECORD_AUDIO,
+                        READ_MEDIA_VIDEO));
+
             } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
-                permissionLauncher.launch(new String[]{CAMERA, RECORD_AUDIO, READ_MEDIA_IMAGES, READ_MEDIA_VIDEO});
+                permissionsList.clear();
+                permissionsList.addAll(Arrays.asList(CAMERA, RECORD_AUDIO, READ_MEDIA_IMAGES, READ_MEDIA_VIDEO));
+
             } else {
-                permissionLauncher.launch(new String[]{CAMERA, RECORD_AUDIO, READ_EXTERNAL_STORAGE});
+                permissionsList.clear();
+                permissionsList.addAll(Arrays.asList(CAMERA, RECORD_AUDIO, READ_EXTERNAL_STORAGE));
             }
+            askForPermissions(permissionsList);
         } catch (Exception e) {
             e.printStackTrace();
-            //checkPermission();
-//            new AlertDialog.Builder(this)
-//                    .setTitle("Permission")
-//                    .setMessage("")
-//                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialogInterface, int i) {
-//                            dialogInterface.dismiss();
-//                            someActivityResultLauncher.launch(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-//                                    .setData(Uri.fromParts("package", getPackageName(), null)));
-//                        }
-//                    })
-//                    .show();
+        }
+
+    }
+
+    private void askForPermissions(ArrayList<String> permissionsList) {
+        try {
+            String[] newPermissionStr = new String[permissionsList.size()];
+            for (int i = 0; i < newPermissionStr.length; i++) {
+                newPermissionStr[i] = permissionsList.get(i);
+            }
+            if (newPermissionStr.length > 0) {
+                //binding.txtStatus.setText("Asking for permissions");
+                permissionLauncher.launch(newPermissionStr);
+            } else {
+            /* User has pressed 'Deny & Don't ask again' so we have to show the enable permissions dialog
+            which will lead them to app details page to enable permissions from there. */
+                new AlertDialog.Builder(this)
+                        .setTitle("Permission")
+                        .setMessage("This app needs camera, gallery and audio permission")
+                        .setCancelable(false)
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                                someActivityResultLauncher.launch(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                        .setData(Uri.fromParts("package", getPackageName(), null)));
+                            }
+                        }).show();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
     }
@@ -445,6 +411,10 @@ public class MainActivity extends AppCompatActivity {
         Canvas c = new Canvas(b);
         v.draw(c);
         return b;
+    }
+
+    private boolean hasPermission(String permissionStr) {
+        return ContextCompat.checkSelfPermission(this, permissionStr) == PackageManager.PERMISSION_GRANTED;
     }
 
 }
