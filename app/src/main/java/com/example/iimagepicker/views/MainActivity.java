@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
             binding.camera.addCameraListener(new CameraListener() {
                 @Override
-                public void onPictureTaken(PictureResult result) {
+                public void onPictureTaken(@NonNull PictureResult result) {
                     result.getSize().flip();
                     bitmap = BitmapFactory.decodeByteArray(result.getData(), 0, result.getData().length);
                     Image image = new Image(getFileFromBitMap(bitmap));
@@ -124,14 +124,14 @@ public class MainActivity extends AppCompatActivity {
                     images.add(0, image);
                     selectedImages.put(image.getImagePath(), selectedImages.size() + 1 + "");
                     binding.cvCount.setVisibility(View.VISIBLE);
-                    binding.tvCount.setText(selectedImages.size() + "");
+                    binding.tvCount.setText(selectedImages.size()+"");
                     imageRvHorizontalAdapter.notifyDataSetChanged();
                     imageRvGridAdapter.notifyDataSetChanged();
                     //startActivity(new Intent(MainActivity.this, ImagePreviewActivity.class));
                 }
 
                 @Override
-                public void onVideoTaken(VideoResult result) {
+                public void onVideoTaken(@NonNull VideoResult result) {
                     // A Video was taken!
                 }
 
