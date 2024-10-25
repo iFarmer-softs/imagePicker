@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
     public static LinkedHashMap<String, String> selectedImages = new LinkedHashMap<>();
     public static Bitmap bitmap;
 
-    ArrayList<String> permissionsList= new ArrayList<>();
+    ArrayList<String> permissionsList = new ArrayList<>();
 
     int permissionsCount = 0;
     String[] permissionsStr = {};
@@ -142,29 +142,27 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onStateChanged(@NonNull View view, int newState) {
                     if (newState == STATE_EXPANDED) {
-                        binding.cvCount.setVisibility(View.GONE);
-                        for (int i = 0; i < selectedImages.size(); i++) {
-                            imageRvGridAdapter.notifyItemChanged(i);
-                        }
+//                        binding.cvCount.setVisibility(View.GONE);
+                        imageRvGridAdapter.notifyDataSetChanged();
                     } else if (newState == STATE_HIDDEN) {
-                        for (int i = 0; i < selectedImages.size(); i++) {
-                            imageRvHorizontalAdapter.notifyItemChanged(i);
-                        }
-                        binding.cvCount.setVisibility(View.VISIBLE);
+                        imageRvHorizontalAdapter.notifyDataSetChanged();
+//                        binding.cvCount.setVisibility(View.VISIBLE);
                     }
                 }
 
                 @Override
                 public void onSlide(@NonNull View view, float v) {
-                    for (int i = 0; i < selectedImages.size(); i++) {
-                        imageRvGridAdapter.notifyItemChanged(i);
+                    if (!selectedImages.isEmpty()){
+                        binding.tvCount.setText(selectedImages.size()+"");
+                        binding.cvCount.setVisibility(View.VISIBLE);
+                    }else {
+                        binding.cvCount.setVisibility(View.GONE);
                     }
-
                     binding.rvImageHorizontal.setAlpha(1.0f - v);
                     binding.llCameraControll.setAlpha(1.0f - v);
+                    binding.cvCount.setAlpha(1.0f - v);
                     binding.llGrid.setAlpha(v);
-                    binding.cvCount.setVisibility(View.GONE);
-                    //binding.rvImageGrid.setAlpha(v);
+                    imageRvHorizontalAdapter.notifyDataSetChanged();
                 }
             });
 
@@ -270,9 +268,9 @@ public class MainActivity extends AppCompatActivity {
             permissionsCount = 0;
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                permissionsStr = new String[]{CAMERA,RECORD_AUDIO,READ_MEDIA_IMAGES,READ_MEDIA_VIDEO};
+                permissionsStr = new String[]{CAMERA, RECORD_AUDIO, READ_MEDIA_IMAGES, READ_MEDIA_VIDEO};
             } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
-                permissionsStr = new String[]{CAMERA,RECORD_AUDIO,READ_MEDIA_IMAGES,READ_MEDIA_VIDEO};
+                permissionsStr = new String[]{CAMERA, RECORD_AUDIO, READ_MEDIA_IMAGES, READ_MEDIA_VIDEO};
             } else {
                 permissionsStr = new String[]{CAMERA, RECORD_AUDIO, READ_EXTERNAL_STORAGE};
             }
@@ -303,7 +301,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 getImagePath();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -400,7 +398,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }).show();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -415,6 +413,15 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean hasPermission(String permissionStr) {
         return ContextCompat.checkSelfPermission(this, permissionStr) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public void setImageCount(){
+        if (!selectedImages.isEmpty()){
+            binding.tvCount.setText(selectedImages.size()+"");
+            binding.cvCount.setVisibility(View.VISIBLE);
+        }else {
+            binding.cvCount.setVisibility(View.GONE);
+        }
     }
 
 }

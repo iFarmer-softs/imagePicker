@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.example.iimagepicker.views.MainActivity;
 import com.example.iimagepicker.databinding.RowGridImageBinding;
 import com.example.iimagepicker.models.Image;
@@ -36,6 +37,7 @@ public class ImageRvGridAdapter extends RecyclerView.Adapter<ImageRvGridAdapter.
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Glide.with(context)
                 .load(images.get(position).getImagePath())
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .into(holder.binding.img);
         if(MainActivity.selectedImages.containsKey(images.get(position).getImagePath())){
             holder.binding.cvCount.setVisibility(View.VISIBLE);

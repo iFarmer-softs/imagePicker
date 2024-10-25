@@ -45,14 +45,13 @@
         </LinearLayout>
 
     </com.otaliastudios.cameraview.CameraView>
-
     <FrameLayout
         android:id="@+id/flDrag"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
         app:behavior_hideable="false"
-        app:behavior_peekHeight="270dp"
+        app:behavior_peekHeight="190dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
 
@@ -62,7 +61,6 @@
             android:layout_height="wrap_content"
             android:alpha="0"
             android:orientation="vertical">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
@@ -90,11 +88,10 @@
                     android:src="@drawable/select_check_box_24dp"
                     app:tint="#00574B" />
             </LinearLayout>
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvImageGrid"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@color/white" />
         </LinearLayout>
 
@@ -102,50 +99,54 @@
             android:id="@+id/rvImageHorizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="70dp" />
+            android:layout_marginTop="0dp" />
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cvCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:minWidth="64dp"
-            android:minHeight="64dp"
-            android:layout_marginTop="18dp"
-            android:visibility="gone"
-            app:cardBackgroundColor="@android:color/holo_green_light"
-            app:cardCornerRadius="50dp"
-            app:strokeColor="@color/white"
-            app:strokeWidth="1dp">
 
-            <ImageView
-                android:layout_gravity="center"
-                android:src="@drawable/check_big_svgrepo_com"
-                app:tint="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:id="@+id/tvCount"
-                style="@style/ShapeAppearance.Material3.Corner.Medium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|end"
-                android:layout_marginTop="8dp"
-                android:text="1"
-                android:layout_marginRight="12dp"
-                android:textColor="@color/white"
-                android:textStyle="bold" />
-
-        </com.google.android.material.card.MaterialCardView>
 
     </FrameLayout>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cvCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginBottom="180dp"
+        android:minWidth="64dp"
+        android:minHeight="64dp"
+        android:layout_marginRight="16dp"
+        android:visibility="gone"
+        app:cardBackgroundColor="@android:color/holo_green_light"
+        app:cardCornerRadius="50dp"
+        app:strokeColor="@color/white"
+        app:strokeWidth="1dp">
+
+        <ImageView
+            android:layout_gravity="center"
+            android:src="@drawable/check_big_svgrepo_com"
+            app:tint="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/tvCount"
+            style="@style/ShapeAppearance.Material3.Corner.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|end"
+            android:layout_marginTop="8dp"
+            android:text="100"
+            android:textSize="14sp"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/white" />
+
+    </com.google.android.material.card.MaterialCardView>
 
     <LinearLayout
         android:id="@+id/llCameraControll"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_gravity="bottom"
+        android:layout_marginBottom="16dp"
         android:gravity="center"
         android:orientation="horizontal">
 
