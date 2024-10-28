@@ -12,39 +12,37 @@
         android:layout_height="match_parent"
         android:keepScreenOn="true"
         app:cameraExperimental="true"
-        app:cameraGesturePinch="zoom">
+        app:cameraGesturePinch="zoom"/>
+    <LinearLayout
 
-        <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/ivRemove"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_margin="20dp"
+            android:padding="4dp"
+            android:background="@drawable/ic_ellipse_6"
+            android:src="@drawable/ic_close_small"
+            app:tint="@color/white" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:layout_width="36dp"
+            android:visibility="gone"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_margin="20dp"
-                android:background="@drawable/ic_ellipse_6"
-                android:padding="4dp"
-                android:src="@drawable/ic_close_small"
-                app:tint="@color/white" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
-
-            <ImageView
-                android:layout_width="36dp"
-                android:visibility="gone"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:background="@drawable/ic_ellipse_6"
-                android:padding="8dp"
-                android:src="@drawable/ic_flash_active" />
-        </LinearLayout>
-
-    </com.otaliastudios.cameraview.CameraView>
+            android:layout_margin="20dp"
+            android:background="@drawable/ic_ellipse_6"
+            android:padding="8dp"
+            android:src="@drawable/ic_flash_active" />
+    </LinearLayout>
     <FrameLayout
         android:id="@+id/flDrag"
         android:layout_width="match_parent"
@@ -52,23 +50,25 @@
         android:background="@android:color/transparent"
         app:behavior_hideable="false"
         app:behavior_peekHeight="190dp"
+        android:orientation="vertical"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
-
 
         <LinearLayout
             android:id="@+id/llGrid"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:alpha="0"
             android:orientation="vertical">
             <LinearLayout
+                android:id="@+id/llNav"
+                android:visibility="invisible"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
-                android:layout_gravity="center"
                 android:background="@color/white"
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/ivBack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center|start"
@@ -81,6 +81,7 @@
                     android:layout_weight="1" />
 
                 <ImageView
+                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end|center"
@@ -94,16 +95,13 @@
                 android:layout_height="wrap_content"
                 android:background="@color/white" />
         </LinearLayout>
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvImageHorizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="0dp" />
-
-
+            android:layout_height="wrap_content" />
 
     </FrameLayout>
+
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cvCount"

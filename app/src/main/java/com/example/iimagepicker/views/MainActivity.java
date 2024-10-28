@@ -11,6 +11,7 @@ import static androidx.core.content.PermissionChecker.PERMISSION_DENIED;
 import static androidx.core.content.PermissionChecker.PERMISSION_DENIED_APP_OP;
 import static androidx.core.content.PermissionChecker.PERMISSION_GRANTED;
 
+import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED;
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN;
 
@@ -114,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
                 binding.camera.toggleFacing();
             });
 
+            binding.ivBack.setOnClickListener(v -> sheetBehavior.setState(STATE_COLLAPSED));
+
             binding.camera.addCameraListener(new CameraListener() {
                 @Override
                 public void onPictureTaken(@NonNull PictureResult result) {
@@ -142,9 +145,10 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onStateChanged(@NonNull View view, int newState) {
                     if (newState == STATE_EXPANDED) {
-//                        binding.cvCount.setVisibility(View.GONE);
+
+
                         imageRvGridAdapter.notifyDataSetChanged();
-                    } else if (newState == STATE_HIDDEN) {
+                    } else if (newState == STATE_COLLAPSED) {
                         imageRvHorizontalAdapter.notifyDataSetChanged();
 //                        binding.cvCount.setVisibility(View.VISIBLE);
                     }
@@ -158,13 +162,28 @@ public class MainActivity extends AppCompatActivity {
                     }else {
                         binding.cvCount.setVisibility(View.GONE);
                     }
+
+                    if (v>0){
+                        binding.llNav.setVisibility(View.VISIBLE);
+                        if (v==1){
+                            binding.rvImageHorizontal.setVisibility(View.INVISIBLE);
+                        }
+                    }else{
+                        binding.rvImageHorizontal.setVisibility(View.VISIBLE);
+                        if (v==0){
+                            binding.llNav.setVisibility(View.INVISIBLE);
+                        }
+                    }
+
                     binding.rvImageHorizontal.setAlpha(1.0f - v);
                     binding.llCameraControll.setAlpha(1.0f - v);
                     binding.cvCount.setAlpha(1.0f - v);
                     binding.llGrid.setAlpha(v);
-                    imageRvHorizontalAdapter.notifyDataSetChanged();
+                    //imageRvHorizontalAdapter.notifyDataSetChanged();
                 }
             });
+
+            binding.ivRemove.setOnClickListener(v -> finish());
 
 
             binding.clickImage.setOnClickListener(new View.OnClickListener() {
