@@ -146,9 +146,10 @@ public class MainActivity extends AppCompatActivity {
                 public void onStateChanged(@NonNull View view, int newState) {
                     if (newState == STATE_EXPANDED) {
 
-
+                        //binding.llNav.setVisibility(View.VISIBLE);
                         imageRvGridAdapter.notifyDataSetChanged();
                     } else if (newState == STATE_COLLAPSED) {
+                        //binding.llNav.setVisibility(View.INVISIBLE);
                         imageRvHorizontalAdapter.notifyDataSetChanged();
 //                        binding.cvCount.setVisibility(View.VISIBLE);
                     }
@@ -163,22 +164,11 @@ public class MainActivity extends AppCompatActivity {
                         binding.cvCount.setVisibility(View.GONE);
                     }
 
-                    if (v>0){
-                        binding.llNav.setVisibility(View.VISIBLE);
-                        if (v==1){
-                            binding.rvImageHorizontal.setVisibility(View.INVISIBLE);
-                        }
-                    }else{
-                        binding.rvImageHorizontal.setVisibility(View.VISIBLE);
-                        if (v==0){
-                            binding.llNav.setVisibility(View.INVISIBLE);
-                        }
-                    }
-
                     binding.rvImageHorizontal.setAlpha(1.0f - v);
                     binding.llCameraControll.setAlpha(1.0f - v);
                     binding.cvCount.setAlpha(1.0f - v);
                     binding.llGrid.setAlpha(v);
+                    binding.llNav.setAlpha(v);
                     //imageRvHorizontalAdapter.notifyDataSetChanged();
                 }
             });
