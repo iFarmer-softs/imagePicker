@@ -6,18 +6,11 @@ import static android.Manifest.permission.READ_MEDIA_IMAGES;
 import static android.Manifest.permission.READ_MEDIA_VIDEO;
 import static android.Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED;
 import static android.Manifest.permission.RECORD_AUDIO;
-
-import static androidx.core.content.PermissionChecker.PERMISSION_DENIED;
-import static androidx.core.content.PermissionChecker.PERMISSION_DENIED_APP_OP;
 import static androidx.core.content.PermissionChecker.PERMISSION_GRANTED;
-
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED;
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
-import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -28,12 +21,10 @@ import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -46,7 +37,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.iimagepicker.adapters.ImageRvGridAdapter;
 import com.example.iimagepicker.adapters.ImageRvHorizontalAdapter;
 import com.example.iimagepicker.databinding.ActivityMainBinding;
@@ -55,30 +45,20 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.PictureResult;
 import com.otaliastudios.cameraview.VideoResult;
-import com.otaliastudios.cameraview.controls.Preview;
-import com.otaliastudios.cameraview.frame.Frame;
-import com.otaliastudios.cameraview.frame.FrameProcessor;
-import com.otaliastudios.cameraview.size.AspectRatio;
-import com.otaliastudios.cameraview.size.Size;
-import com.otaliastudios.cameraview.size.SizeSelector;
-import com.otaliastudios.cameraview.size.SizeSelectors;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
 
     private BottomSheetBehavior sheetBehavior;
     private ActivityMainBinding binding;
-    private ArrayList<Image> images = new ArrayList<>();
+    private final ArrayList<Image> images = new ArrayList<>();
     private ImageRvHorizontalAdapter imageRvHorizontalAdapter;
     private ImageRvGridAdapter imageRvGridAdapter;
 
@@ -305,6 +285,7 @@ public class MainActivity extends AppCompatActivity {
                 //Some permissions are denied and can be asked again.
                 askForPermissions(permissionsList);
             } else if (permissionsCount > 0) {
+
                 new AlertDialog.Builder(this)
                         .setTitle("Permission")
                         .setMessage("This app needs camera, gallery and audio permission")
