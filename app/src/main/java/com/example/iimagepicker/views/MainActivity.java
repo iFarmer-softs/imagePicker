@@ -176,17 +176,19 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onSlide(@NonNull View view, float v) {
+
                     if (!selectedImages.isEmpty()){
                         binding.tvCount.setText(selectedImages.size()+"");
                         binding.cvCount.setVisibility(View.VISIBLE);
                     }else {
                         binding.cvCount.setVisibility(View.GONE);
                     }
-
                     if (v>0){
                         binding.llNav.setVisibility(View.VISIBLE);
+
                         if (v==1){
                             binding.rvImageHorizontal.setVisibility(View.INVISIBLE);
+                            binding.cvCount.setVisibility(View.GONE);
                         }
                     }else{
                         binding.rvImageHorizontal.setVisibility(View.VISIBLE);
@@ -200,6 +202,8 @@ public class MainActivity extends AppCompatActivity {
                     binding.cvCount.setAlpha(1.0f - v);
                     binding.llGrid.setAlpha(v);
                     binding.llNav.setAlpha(v);
+
+
                     //imageRvHorizontalAdapter.notifyDataSetChanged();
                 }
             });
