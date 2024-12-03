@@ -7,8 +7,32 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".views.ImagePreviewActivity">
-    <ImageView
-        android:id="@+id/ivImage"
+    <com.google.android.material.appbar.AppBarLayout
+        android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content">
+        <androidx.appcompat.widget.Toolbar
+            app:title="@string/app_name"
+            app:titleTextColor="@color/black"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </com.google.android.material.appbar.AppBarLayout>
+    <Button
+        android:layout_gravity="center"
+        android:layout_margin="16dp"
+        android:id="@+id/btTakePicture"
+        android:text="@string/take_picture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvImageGrid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+
+<!--    <ImageView-->
+<!--        android:id="@+id/ivImage"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"/>-->
 </LinearLayout>

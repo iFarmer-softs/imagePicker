@@ -33,10 +33,10 @@
         android:theme="@style/Theme.IImagePicker"
         tools:targetApi="31">
         <activity
-            android:name=".views.ImagePreviewActivity"
+            android:name=".views.MainActivity"
             android:exported="false" />
         <activity
-            android:name=".views.MainActivity"
+            android:name=".views.ImagePreviewActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

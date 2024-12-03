@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 //import com.bumptech.glide.Glide;Glide
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.example.iimagepicker.R;
 import com.example.iimagepicker.databinding.UnitHomeBinding;
 import com.example.iimagepicker.models.Image;
 import com.example.iimagepicker.views.MainActivity;
@@ -39,6 +40,7 @@ public class ImageRvHorizontalAdapter extends RecyclerView.Adapter<ImageRvHorizo
         Glide.with(context)
                 .load(images.get(position).getImagePath())
                 .transition(DrawableTransitionOptions.withCrossFade())
+                .placeholder(R.drawable.ic_gallery2)
                 .into(holder.binding.ivImages);
         if (MainActivity.selectedImages.containsKey(images.get(position).getImagePath())) {
             holder.binding.cvCount.setVisibility(View.VISIBLE);
