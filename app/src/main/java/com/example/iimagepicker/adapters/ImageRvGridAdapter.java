@@ -71,6 +71,7 @@ public class ImageRvGridAdapter extends RecyclerView.Adapter<ImageRvGridAdapter.
                 //Log.e("size", countIndex.size() + "");
                 //notifyItemRangeChanged(0, images.size());
                 notifyDataSetChanged();
+                ((MainActivity) context).setImageCount();
             }
         });
     }

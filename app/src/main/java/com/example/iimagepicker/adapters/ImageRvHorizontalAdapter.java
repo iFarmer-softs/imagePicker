@@ -40,7 +40,7 @@ public class ImageRvHorizontalAdapter extends RecyclerView.Adapter<ImageRvHorizo
         Glide.with(context)
                 .load(images.get(position).getImagePath())
                 .transition(DrawableTransitionOptions.withCrossFade())
-                .placeholder(R.drawable.ic_gallery2)
+                //.placeholder(R.drawable.ic_gallery2)
                 .into(holder.binding.ivImages);
         if (MainActivity.selectedImages.containsKey(images.get(position).getImagePath())) {
             holder.binding.cvCount.setVisibility(View.VISIBLE);

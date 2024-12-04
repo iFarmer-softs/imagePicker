@@ -19,6 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.bumptech.glide.Glide;
+import com.example.iimagepicker.GridImageDecoration;
 import com.example.iimagepicker.R;
 import com.example.iimagepicker.adapters.ImagePreviewRVAdapter;
 import com.example.iimagepicker.adapters.ImageRvGridAdapter;
@@ -42,6 +43,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
 
         binding.rvImageGrid.setLayoutManager(new GridLayoutManager(this, 3));
         binding.rvImageGrid.setAdapter(imagePreviewRVAdapter);
+        binding.rvImageGrid.addItemDecoration(new GridImageDecoration(6,3));
 
         binding.btTakePicture.setOnClickListener(v -> startActivity(new Intent(this, MainActivity.class)));
 

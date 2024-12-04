@@ -33,7 +33,9 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.window.OnBackInvokedDispatcher;
 
 import androidx.activity.OnBackPressedCallback;
@@ -43,12 +45,14 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.iimagepicker.GridImageDecoration;
 import com.example.iimagepicker.adapters.ImageRvGridAdapter;
 import com.example.iimagepicker.adapters.ImageRvHorizontalAdapter;
 import com.example.iimagepicker.databinding.ActivityMainBinding;
@@ -112,15 +116,18 @@ public class MainActivity extends AppCompatActivity {
 
             binding.rvImageGrid.setLayoutManager(new GridLayoutManager(this, 3));
             binding.rvImageGrid.setAdapter(imageRvGridAdapter);
+            binding.rvImageGrid.addItemDecoration(new GridImageDecoration(6,3));
 
             binding.ivSwitchCamera.setOnClickListener(view -> {
                 binding.camera.toggleFacing();
             });
 
-            if (!selectedImages.isEmpty()){
-                binding.cvCount.setVisibility(View.VISIBLE);
-                binding.tvCount.setText(selectedImages.size()+"");
-            }
+            selectedImages.clear();
+//
+//            if (!selectedImages.isEmpty()){
+//                binding.cvCount.setVisibility(View.VISIBLE);
+//                binding.tvCount.setText(selectedImages.size()+"");
+//            }
 
             getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
                 @Override
@@ -185,13 +192,15 @@ public class MainActivity extends AppCompatActivity {
                     }
                     if (v>0){
                         binding.llNav.setVisibility(View.VISIBLE);
-
+                        binding.llCameraControll.setVisibility(View.VISIBLE);
+                        binding.rvImageHorizontal.setVisibility(View.VISIBLE);
                         if (v==1){
                             binding.rvImageHorizontal.setVisibility(View.INVISIBLE);
-                            binding.cvCount.setVisibility(View.GONE);
+                            binding.llCameraControll.setVisibility(View.GONE);
                         }
                     }else{
                         binding.rvImageHorizontal.setVisibility(View.VISIBLE);
+                        binding.llCameraControll.setVisibility(View.VISIBLE);
                         if (v==0){
                             binding.llNav.setVisibility(View.INVISIBLE);
                         }
@@ -199,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
 
                     binding.rvImageHorizontal.setAlpha(1.0f - v);
                     binding.llCameraControll.setAlpha(1.0f - v);
-                    binding.cvCount.setAlpha(1.0f - v);
+                    //binding.cvCount.setAlpha(1.0f - v);
                     binding.llGrid.setAlpha(v);
                     binding.llNav.setAlpha(v);
 
