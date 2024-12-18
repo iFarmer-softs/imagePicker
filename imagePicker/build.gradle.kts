@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.library)
+    id("maven-publish")
 }
 
 android {
@@ -30,6 +31,18 @@ android {
     buildFeatures{
         viewBinding = true
     }
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
+        multipleVariants {
+            withSourcesJar()
+            withJavadocJar()
+            allVariants()
+        }
+    }
 }
 
 dependencies {
@@ -42,4 +55,17 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
 
     implementation("com.otaliastudios:cameraview:2.7.2")
+}
+
+publishing {
+    publications {
+        register<MavenPublication>("release") {
+            afterEvaluate {
+                from(components["release"])
+                groupId = "asia.ifarmer"
+                artifactId = "imagepicker"
+                version = "1.0.0"
+            }
+        }
+    }
 }
