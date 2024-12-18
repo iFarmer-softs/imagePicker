@@ -19,3 +19,10 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keep class * {
+    @androidx.annotation.IdRes *;
+    @androidx.annotation.LayoutRes *;
+}
+
+-keep class com.otaliastudios.cameraview.** { *; }
+-keepattributes *Annotation*
