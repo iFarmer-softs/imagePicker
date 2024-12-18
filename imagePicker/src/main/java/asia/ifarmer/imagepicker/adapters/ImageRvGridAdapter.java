@@ -15,7 +15,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 
 import asia.ifarmer.imagepicker.R;
 import asia.ifarmer.imagepicker.databinding.RowGridImageBinding;
-import asia.ifarmer.imagepicker.views.MainActivity;
+import asia.ifarmer.imagepicker.views.ImagerActivity;
 import asia.ifarmer.imagepicker.models.Image;
 
 import java.util.ArrayList;
@@ -43,9 +43,9 @@ public class ImageRvGridAdapter extends RecyclerView.Adapter<ImageRvGridAdapter.
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .placeholder(R.drawable.ic_gallery2)
                 .into(holder.binding.img);
-        if(MainActivity.selectedImages.containsKey(images.get(position).getImagePath())){
+        if(ImagerActivity.selectedImages.containsKey(images.get(position).getImagePath())){
             holder.binding.cvCount.setVisibility(View.VISIBLE);
-            holder.binding.tvCount.setText(MainActivity.selectedImages.get(images.get(position).getImagePath()));
+            holder.binding.tvCount.setText(ImagerActivity.selectedImages.get(images.get(position).getImagePath()));
         }else {
             holder.binding.cvCount.setVisibility(View.GONE);
         }
@@ -57,23 +57,23 @@ public class ImageRvGridAdapter extends RecyclerView.Adapter<ImageRvGridAdapter.
             public void onClick(View v) {
                 images.get(position).setSelected(!images.get(position).isSelected());
                 if(!images.get(position).isSelected()){
-                    MainActivity.selectedImages.remove(images.get(position).getImagePath());
+                    ImagerActivity.selectedImages.remove(images.get(position).getImagePath());
                 }else {
-                    MainActivity.selectedImages.put(images.get(position).getImagePath(), "");
+                    ImagerActivity.selectedImages.put(images.get(position).getImagePath(), "");
                 }
                 //images.get(position).setCountPosition(countPosition);
                 int count = 0;
-                for (String s : MainActivity.selectedImages.keySet()) {
-                    MainActivity.selectedImages.put(s, (++count) + "");
+                for (String s : ImagerActivity.selectedImages.keySet()) {
+                    ImagerActivity.selectedImages.put(s, (++count) + "");
                 }
 
-                for (String s : MainActivity.selectedImages.keySet()) {
-                    Log.e("log", MainActivity.selectedImages.get(s) + " " + s);
+                for (String s : ImagerActivity.selectedImages.keySet()) {
+                    Log.e("log", ImagerActivity.selectedImages.get(s) + " " + s);
                 }
                 //Log.e("size", countIndex.size() + "");
                 //notifyItemRangeChanged(0, images.size());
                 notifyDataSetChanged();
-                ((MainActivity) context).setImageCount();
+                ((ImagerActivity) context).setImageCount();
             }
         });
     }

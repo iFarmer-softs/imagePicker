@@ -8,7 +8,7 @@
     android:background="#E9E5DC"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/activity_main">
+    tools:showIn="@layout/activity_imager">
 
     <com.otaliastudios.cameraview.CameraView
         android:id="@+id/camera"

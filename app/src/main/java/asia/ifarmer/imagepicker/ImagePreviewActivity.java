@@ -13,7 +13,7 @@ import com.example.iimagepicker.databinding.ActivityImagePreviewBinding;
 
 import java.util.ArrayList;
 
-import asia.ifarmer.imagepicker.views.MainActivity;
+import asia.ifarmer.imagepicker.views.ImagerActivity;
 
 public class ImagePreviewActivity extends AppCompatActivity {
 
@@ -36,7 +36,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.e("donme", "done");
-                startActivity(new Intent(ImagePreviewActivity.this, MainActivity.class));
+                startActivity(new Intent(ImagePreviewActivity.this, ImagerActivity.class));
             }
         });
 

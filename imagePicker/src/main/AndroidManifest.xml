@@ -33,7 +33,7 @@
         android:theme="@style/Theme.IImagePicker"
         tools:targetApi="31">
         <activity
-            android:name=".views.MainActivity"
+            android:name=".views.ImagerActivity"
             android:exported="false" />
     </application>
 

@@ -43,7 +43,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import asia.ifarmer.imagepicker.GridImageDecoration;
 import asia.ifarmer.imagepicker.adapters.ImageRvGridAdapter;
 import asia.ifarmer.imagepicker.adapters.ImageRvHorizontalAdapter;
-import asia.ifarmer.imagepicker.databinding.ActivityMainBinding;
+import asia.ifarmer.imagepicker.databinding.ActivityImagerBinding;
 import asia.ifarmer.imagepicker.models.Image;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.otaliastudios.cameraview.CameraListener;
@@ -57,11 +57,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 
-public class MainActivity extends AppCompatActivity {
+public class ImagerActivity extends AppCompatActivity {
 
 
     private BottomSheetBehavior sheetBehavior;
-    private ActivityMainBinding binding;
+    private ActivityImagerBinding binding;
     private ArrayList<Image> images = new ArrayList<>();
     private ImageRvHorizontalAdapter imageRvHorizontalAdapter;
     private ImageRvGridAdapter imageRvGridAdapter;
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        binding = ActivityImagerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         try {
