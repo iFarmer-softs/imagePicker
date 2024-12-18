@@ -18,4 +18,5 @@
     <string name="location">Location</string>
     <string name="sms">SMS</string>
     <string name="contacts">Contacts</string>
+    <string name="take_picture">Take picture</string>
 </resources>

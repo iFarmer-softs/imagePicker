@@ -1,19 +1,211 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/black"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff"
-    tools:context=".MainActivity">
-    <include android:id="@+id/mainContent" layout="@layout/content_main" />
+    tools:context=".views.MainActivity">
 
-    <include android:id="@+id/bottomSheet" layout="@layout/bottom_sheet" />
+    <com.otaliastudios.cameraview.CameraView
+        android:id="@+id/camera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:keepScreenOn="true"
+        app:cameraExperimental="true"
+        app:cameraGesturePinch="zoom"/>
+    <LinearLayout
 
-<!--    <com.otaliastudios.cameraview.CameraView-->
-<!--        android:id="@+id/camera"-->
-<!--        android:keepScreenOn="true"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="match_parent" />-->
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/ivRemove"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_margin="20dp"
+            android:padding="4dp"
+            android:background="@drawable/ic_ellipse_6"
+            android:src="@drawable/ic_close_small"
+            app:tint="@color/white" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:layout_width="36dp"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:background="@drawable/ic_ellipse_6"
+            android:padding="8dp"
+            android:src="@drawable/ic_flash_active" />
+    </LinearLayout>
+    <FrameLayout
+        android:id="@+id/flDrag"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        app:behavior_hideable="false"
+        app:behavior_peekHeight="190dp"
+        android:orientation="vertical"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <LinearLayout
+            android:id="@+id/llGrid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0"
+            android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/llNav"
+                android:alpha="0"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/ivBack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|start"
+                    android:padding="16dp"
+                    android:src="@drawable/ic_back" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center"
+                    android:padding="16dp"
+                    android:src="@drawable/select_check_box_24dp"
+                    app:tint="#00574B" />
+            </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvImageGrid"
+                android:layout_weight="1"
+                android:background="@color/backgroundColor"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+<!--            <com.google.android.material.card.MaterialCardView-->
+<!--                android:id="@+id/cvCount2"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="end|bottom"-->
+<!--                android:minWidth="64dp"-->
+<!--                android:minHeight="64dp"-->
+<!--                android:layout_marginRight="16dp"-->
+<!--                app:cardBackgroundColor="@android:color/holo_green_light"-->
+<!--                app:cardCornerRadius="50dp"-->
+<!--                app:strokeColor="@color/white"-->
+<!--                app:strokeWidth="1dp">-->
+
+<!--                <ImageView-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:src="@drawable/check_big_svgrepo_com"-->
+<!--                    app:tint="@color/white"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"/>-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/tvCount2"-->
+<!--                    style="@style/ShapeAppearance.Material3.Corner.Medium"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_gravity="center|end"-->
+<!--                    android:layout_marginTop="8dp"-->
+<!--                    android:text="100"-->
+<!--                    android:textSize="14sp"-->
+<!--                    android:layout_marginRight="10dp"-->
+<!--                    android:textColor="@color/white" />-->
+
+<!--            </com.google.android.material.card.MaterialCardView>-->
+
+        </LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvImageHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </FrameLayout>
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cvCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginBottom="180dp"
+        android:minWidth="64dp"
+        android:minHeight="64dp"
+        android:layout_marginRight="16dp"
+        android:visibility="gone"
+        app:cardBackgroundColor="@android:color/holo_green_light"
+        app:cardCornerRadius="50dp"
+        app:strokeColor="@color/white"
+        app:strokeWidth="1dp">
+
+        <ImageView
+            android:layout_gravity="center"
+            android:src="@drawable/check_big_svgrepo_com"
+            app:tint="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/tvCount"
+            style="@style/ShapeAppearance.Material3.Corner.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|end"
+            android:layout_marginTop="8dp"
+            android:text="100"
+            android:textSize="14sp"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/white" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <LinearLayout
+        android:id="@+id/llCameraControll"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/ivGallery"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="start|center"
+            android:layout_weight="1"
+            android:src="@drawable/ic_gallery"
+            app:tint="@color/white" />
+
+        <ImageView
+            android:id="@+id/clickImage"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/ic_take_photo" />
+
+        <ImageView
+            android:id="@+id/ivSwitchCamera"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="end|center"
+            android:layout_weight="1"
+            android:src="@drawable/ic_camera_switch"
+            app:tint="@color/white" />
+    </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

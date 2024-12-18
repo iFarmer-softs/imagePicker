@@ -53,7 +53,7 @@
             app:tint="@color/white"
             android:layout_marginRight="20dp"
             android:padding="10dp"
-            android:src="@drawable/ic_camera_switch" />
+            android:src="@drawable/baseline_cameraswitch_24" />
 
     </RelativeLayout>
 
