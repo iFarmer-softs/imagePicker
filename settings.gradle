@@ -26,3 +26,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "iImagePicker"
 include ':app'
+include ':imagePicker'
