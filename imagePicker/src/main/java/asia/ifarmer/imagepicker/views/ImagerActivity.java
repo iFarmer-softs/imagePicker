@@ -44,6 +44,7 @@ import asia.ifarmer.imagepicker.GridImageDecoration;
 import asia.ifarmer.imagepicker.adapters.ImageRvGridAdapter;
 import asia.ifarmer.imagepicker.adapters.ImageRvHorizontalAdapter;
 import asia.ifarmer.imagepicker.databinding.ActivityImagerBinding;
+import asia.ifarmer.imagepicker.events.ImageSelectionListener;
 import asia.ifarmer.imagepicker.models.Image;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.otaliastudios.cameraview.CameraListener;
@@ -73,6 +74,7 @@ public class ImagerActivity extends AppCompatActivity {
 
     int permissionsCount = 0;
     String[] permissionsStr = {};
+    private static ImageSelectionListener imageSelectionListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,6 +208,9 @@ public class ImagerActivity extends AppCompatActivity {
             });
 
             binding.cvCount.setOnClickListener(v -> {
+                if(imageSelectionListener != null){
+                    imageSelectionListener.onImageSelected(selectedImages);
+                }
                 finish();
             });
 
@@ -265,6 +270,7 @@ public class ImagerActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        imageSelectionListener = null;
         binding.camera.destroy();
     }
 
@@ -457,5 +463,13 @@ public class ImagerActivity extends AppCompatActivity {
         }else {
             binding.cvCount.setVisibility(View.GONE);
         }
+    }
+
+    public static void setImageSelectionListener(ImageSelectionListener listener) {
+        imageSelectionListener = listener;
+    }
+
+    public static ImageSelectionListener getImageSelectionListener() {
+        return imageSelectionListener;
     }
 }

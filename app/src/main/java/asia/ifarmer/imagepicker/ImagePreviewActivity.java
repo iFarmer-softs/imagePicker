@@ -12,7 +12,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import com.example.iimagepicker.databinding.ActivityImagePreviewBinding;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
+import asia.ifarmer.imagepicker.events.ImageSelectionListener;
 import asia.ifarmer.imagepicker.views.ImagerActivity;
 
 public class ImagePreviewActivity extends AppCompatActivity {
@@ -36,7 +38,16 @@ public class ImagePreviewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.e("donme", "done");
-                startActivity(new Intent(ImagePreviewActivity.this, ImagerActivity.class));
+                ImagePicker.with(ImagePreviewActivity.this)
+                        .start(new ImageSelectionListener() {
+                            @Override
+                            public void onImageSelected(LinkedHashMap<String, String> selectedImages) {
+                                Log.e("size", selectedImages.size() + "");
+                                for (String s : selectedImages.keySet()) {
+                                    Log.e("size", s);
+                                }
+                            }
+                        });
             }
         });
 
