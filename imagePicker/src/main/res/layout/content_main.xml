@@ -15,6 +15,7 @@
         android:keepScreenOn="true"
         app:cameraGesturePinch="zoom"
         app:cameraExperimental="true"
+        app:cameraFlash="torch"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <ImageView

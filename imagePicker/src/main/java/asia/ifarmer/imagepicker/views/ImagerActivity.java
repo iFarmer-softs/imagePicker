@@ -13,6 +13,7 @@ import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -26,7 +27,10 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.WindowMetrics;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResult;
@@ -50,6 +54,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.PictureResult;
 import com.otaliastudios.cameraview.VideoResult;
+import com.otaliastudios.cameraview.controls.Flash;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -75,12 +80,20 @@ public class ImagerActivity extends AppCompatActivity {
     int permissionsCount = 0;
     String[] permissionsStr = {};
     private static ImageSelectionListener imageSelectionListener;
+    private int height;
+    private int width;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityImagerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        Display d = ((WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        width = d.getWidth();
+        height = d.getHeight();
+
+        Log.e("height width", height + " " + width);
 
         try {
 
@@ -124,12 +137,16 @@ public class ImagerActivity extends AppCompatActivity {
 
             binding.ivBack.setOnClickListener(v -> sheetBehavior.setState(STATE_COLLAPSED));
 
+            binding.camera.setFlash(Flash.ON);
             binding.camera.addCameraListener(new CameraListener() {
                 @Override
                 public void onPictureTaken(@NonNull PictureResult result) {
                     result.getSize().flip();
                     bitmap = BitmapFactory.decodeByteArray(result.getData(), 0, result.getData().length);
-                    Image image = new Image(getFileFromBitMap(bitmap));
+
+                    Log.e("height width", bitmap.getHeight() + " " + bitmap.getWidth());
+
+                    Image image = new Image(getFileFromBitMap(centerCrop(bitmap, binding.camera)));
                     image.setSelected(true);
                     images.add(0, image);
                     selectedImages.put(image.getImagePath(), selectedImages.size() + 1 + "");
@@ -203,7 +220,8 @@ public class ImagerActivity extends AppCompatActivity {
             binding.clickImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    binding.camera.takePictureSnapshot();
+                    //binding.camera.takePictureSnapshot();
+                    binding.camera.takePicture();
                 }
             });
 
@@ -471,5 +489,40 @@ public class ImagerActivity extends AppCompatActivity {
 
     public static ImageSelectionListener getImageSelectionListener() {
         return imageSelectionListener;
+    }
+
+    public Bitmap centerCrop(Bitmap originalBitmap, View previewView) {
+        // Get the dimensions of the preview view
+        int previewWidth = previewView.getWidth();
+        int previewHeight = previewView.getHeight();
+
+        // Get the dimensions of the original bitmap
+        int bitmapWidth = originalBitmap.getWidth();
+        int bitmapHeight = originalBitmap.getHeight();
+
+        // Calculate aspect ratios
+        float previewAspectRatio = (float) previewWidth / previewHeight;
+        float bitmapAspectRatio = (float) bitmapWidth / bitmapHeight;
+
+        // Determine cropping dimensions
+        int cropWidth;
+        int cropHeight;
+
+        if (bitmapAspectRatio > previewAspectRatio) {
+            // Crop width to match the preview's aspect ratio
+            cropWidth = (int) (bitmapHeight * previewAspectRatio);
+            cropHeight = bitmapHeight;
+        } else {
+            // Crop height to match the preview's aspect ratio
+            cropWidth = bitmapWidth;
+            cropHeight = (int) (bitmapWidth / previewAspectRatio);
+        }
+
+        // Calculate the top-left corner for cropping
+        int xOffset = (bitmapWidth - cropWidth) / 2;
+        int yOffset = (bitmapHeight - cropHeight) / 2;
+
+        // Crop the bitmap
+        return Bitmap.createBitmap(originalBitmap, xOffset, yOffset, cropWidth, cropHeight);
     }
 }
