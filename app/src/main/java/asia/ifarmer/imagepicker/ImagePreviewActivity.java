@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.viewpager.widget.PagerAdapter;
@@ -73,7 +74,16 @@ public class ImagePreviewActivity extends AppCompatActivity {
             }
         });
 
-
+        getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if(binding.viewPager.getVisibility() == VISIBLE){
+                    binding.viewPager.setVisibility(View.GONE);
+                }else {
+                    getOnBackPressedDispatcher().onBackPressed();
+                }
+            }
+        });
     }
 
 
