@@ -55,6 +55,7 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
 
     implementation("com.otaliastudios:cameraview:2.7.2")
+    implementation("androidx.viewpager:viewpager:1.1.0")
 }
 
 publishing {
