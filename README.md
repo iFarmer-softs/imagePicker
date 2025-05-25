@@ -39,3 +39,14 @@ allprojects {
 dependencies {
     implementation 'com.github.iFarmer-softs:imagePicker:1.0.5'
 }
+
+ImagePicker.with(ImagePreviewActivity.this)
+                        .start(new ImageSelectionListener() {
+                            @Override
+                            public void onImageSelected(LinkedHashMap<String, String> selectedImages) {
+                                images.addAll(selectedImages.keySet());
+                                if (imagePreviewRVAdapter != null) {
+                                    imagePreviewRVAdapter.notifyDataSetChanged();
+                                }
+                            }
+                        });
