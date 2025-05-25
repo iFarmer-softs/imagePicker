@@ -59,13 +59,9 @@ public class ImagePreviewActivity extends AppCompatActivity {
                         .start(new ImageSelectionListener() {
                             @Override
                             public void onImageSelected(LinkedHashMap<String, String> selectedImages) {
-                                Log.e("size", selectedImages.size() + "");
                                 images.addAll(selectedImages.keySet());
                                 if (imagePreviewRVAdapter != null) {
                                     imagePreviewRVAdapter.notifyDataSetChanged();
-                                }
-                                for (String s : selectedImages.keySet()) {
-                                    Log.e("size", s + " " + new File(s).length());
                                 }
                             }
                         });
