@@ -36,6 +36,6 @@ allprojects {
     }
 }
 
-```dependencies {
+dependencies {
     implementation 'com.github.iFarmer-softs:imagePicker:1.0.5'
 }
