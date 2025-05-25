@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import asia.ifarmer.imagepicker.events.ImageSelectionListener;
-import asia.ifarmer.imagepicker.views.ImagerActivity;
 
 public class ImagePreviewActivity extends AppCompatActivity {
 
@@ -47,7 +46,6 @@ public class ImagePreviewActivity extends AppCompatActivity {
             @Override
             public void onItemClick(int position) {
                 binding.viewPager.setVisibility(VISIBLE);
-                Log.e("daf", "dasf 3");
                 ImagePagerAdapter imagePagerAdapter = new ImagePagerAdapter();
                 binding.viewPager.setAdapter(imagePagerAdapter);
             }
@@ -56,7 +54,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
         binding.btTakePicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("donme", "done");
+
                 ImagePicker.with(ImagePreviewActivity.this)
                         .start(new ImageSelectionListener() {
                             @Override

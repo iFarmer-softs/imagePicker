@@ -11,10 +11,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.example.iimagepicker.databinding.RowGridImageBinding;
 
 import java.util.ArrayList;
 
-import asia.ifarmer.imagepicker.databinding.RowGridImageBinding;
 
 public class ImagePreviewRVAdapter extends RecyclerView.Adapter<ImagePreviewRVAdapter.ViewHolder> {
     private Context context;
