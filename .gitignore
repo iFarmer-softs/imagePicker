@@ -16,3 +16,4 @@ local.properties
 /app/release
 .idea/*
 .idea/gradle.xml
+/imagePicker/build
